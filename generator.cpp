@@ -334,7 +334,7 @@ void Generator::detLocalmin()
 
     double dInit[3]={rPath.at(0).px,rPath.at(0).py,rPath.at(0).pq};
     s->sense(dInit);
-    for(int i=0;i<rPath.size();++i)
+    for(int i=0;i<rPath.size()-1;i++)
     {
         double diff_x = rPath.at(i+1).px-rPath.at(i).px;
         double diff_y = rPath.at(i+1).py-rPath.at(i).py;
