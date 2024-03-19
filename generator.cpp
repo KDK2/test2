@@ -275,40 +275,44 @@ void Generator::predict(bool bStag)
         double q;
         normalizeAngle(ref,q);
         //q=addNoise(q,RAD(3.0));
-        if(bFirst)
+        if(!bStag)
         {
-            bFirst=false;
-            q_old=q;
+            if(bFirst)
+            {
+                bFirst=false;
+                q_old=q;
+            }
+            else
+            {
+                w=q-q_old;
+                q_old=q;
+            }
+            if(bwFirst)
+            {
+                bwFirst=bFirst?true:false;
+                w_old=w;
+            }
+            else
+            {
+                a=w-w_old;
+                w_old=w;
+            }
+            if(baFirst)
+            {
+                baFirst=bwFirst?true:false;
+                a_old=a;
+            }
+            else
+            {
+                j=a-a_old;
+                a_old=a;
+                j_sum+=j;
+            }
         }
-        else
-        {
-            w=q-q_old;
-            q_old=q;
-        }
-        if(bwFirst)
-        {
-            bwFirst=bFirst?true:false;
-            w_old=w;
-        }
-        else
-        {
-            a=w-w_old;
-            w_old=w;
-        }
-        if(baFirst)
-        {
-            baFirst=bwFirst?true:false;
-            a_old=a;
-        }
-        else
-        {
-            j=a-a_old;
-            a_old=a;
-            j_sum+=j;
-        }
-
         rPath.push_back({x,y,q});
     }
+    double dInit[3]={rPath.at(0).px,rPath.at(0).py,rPath.at(0).pq};
+    s->sense(dInit);
 }
 
 void Generator::detLocalmin()
@@ -332,8 +336,7 @@ void Generator::detLocalmin()
     }
     m_localmin=ret;
 
-    double dInit[3]={rPath.at(0).px,rPath.at(0).py,rPath.at(0).pq};
-    s->sense(dInit);
+    d_sum=0.0;
     for(int i=0;i<rPath.size()-1;i++)
     {
         double diff_x = rPath.at(i+1).px-rPath.at(i).px;
