@@ -211,7 +211,6 @@ void Controller::control()
         velocity(ref,v,w);
         a->update(rPos,rPos,v,w);
     }
-    //stagnation판단하는 쪽에 랜덤을 넣어줘야하나..
     else
     {
         double qpos[2];
@@ -222,13 +221,7 @@ void Controller::control()
         }
         pGen->getStagPos(qpos);
         s->addQuark(qpos[INDEX_X],qpos[INDEX_Y]);
-        //localminimum 판단 함수의 추가 기능
-        //1. temporary goal 도착을 예측한다.
-        //2. temporary goal에 도착한다는 예측이 나오면 해당하는 g는 temporary goal을 시작 위치로 하는
-        //   future path를 계산한다.
-        //3. 계산 후 localminimum을 계산한다.
-        //4. true일 경우 local을 벗어나게하는 진정한 temporary goal이 아닌 것이다. 따라서 localminimum결과값은 true다.
-        //5. false일 경우 local을 벗어나게 하는 temporary goal이고 localminimum 결과값은 false다.
+
         //temporary골의 선택
         //temporary T 점에서 robot - goal 과의 수직하는 거리가 새로운 temporary goal T_n이 계산하는 robot - goal거리 d_n
         //보다 작으면 새로운 temporary 골이라고 정한다.

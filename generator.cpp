@@ -247,6 +247,15 @@ void Generator::predict(bool bStag)
     double delta=ip.p_param.lparam.delta;
     double iter_max=bStag?lam_stagnation/delta:(lam)/delta;
 
+    double q_old=0.0;
+    double w_old=0.0;
+    double a_old=0.0;
+    double w=0.0;
+    double a=0.0;
+    double j=0.0;
+    bool bFirst=true;
+    bool bwFirst=true;
+    bool baFirst=true;
     for(int i=1;i<iter_max;i++)
     {
         double px=rPath[i-1].px;
@@ -266,6 +275,38 @@ void Generator::predict(bool bStag)
         double q;
         normalizeAngle(ref,q);
         //q=addNoise(q,RAD(3.0));
+        if(bFirst)
+        {
+            bFirst=false;
+            q_old=q;
+        }
+        else
+        {
+            w=q-q_old;
+            q_old=q;
+        }
+        if(bwFirst)
+        {
+            bwFirst=bFirst?true:false;
+            w_old=w;
+        }
+        else
+        {
+            a=w-w_old;
+            w_old=w;
+        }
+        if(baFirst)
+        {
+            baFirst=bwFirst?true:false;
+            a_old=a;
+        }
+        else
+        {
+            j=a-a_old;
+            a_old=a;
+            j_sum+=j;
+        }
+
         rPath.push_back({x,y,q});
     }
 }
@@ -277,6 +318,7 @@ void Generator::detLocalmin()
     mean_x/=rPath.size();
     mean_y=std::accumulate(rPath.begin(),rPath.end(),0.0,[](double sum, path p){return sum+p.py;});
     mean_y/=rPath.size();
+
 
     if(rPath.empty()) return;
 
@@ -292,6 +334,13 @@ void Generator::detLocalmin()
 
     double dInit[3]={rPath.at(0).px,rPath.at(0).py,rPath.at(0).pq};
     s->sense(dInit);
+    for(int i=0;i<rPath.size();++i)
+    {
+        double diff_x = rPath.at(i+1).px-rPath.at(i).px;
+        double diff_y = rPath.at(i+1).py-rPath.at(i).py;
+        double dist   = sqrt(pow(diff_x,2)+pow(diff_y,2));
+        d_sum+=dist;
+    }
 }
 
 void Generator::gen(genmode mode)
@@ -300,7 +349,6 @@ void Generator::gen(genmode mode)
     if(genmode::prediction==m)
     {
         predict(false);
-        detLocalmin();
     }
     if(genmode::reference==m)
     {
