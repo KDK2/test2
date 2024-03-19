@@ -306,7 +306,7 @@ void Generator::predict(bool bStag)
             {
                 j=a-a_old;
                 a_old=a;
-                j_sum+=j;
+                j_sum+=abs(j);
             }
         }
         rPath.push_back({x,y,q});
