@@ -249,6 +249,7 @@ void Generator::predict(bool bStag)
 
     double q_old=0.0;
     bool bFirst=true;
+    q_sum=0.0;
     for(int i=1;i<iter_max;i++)
     {
         double px=rPath[i-1].px;
