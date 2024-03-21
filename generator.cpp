@@ -248,14 +248,7 @@ void Generator::predict(bool bStag)
     double iter_max=bStag?lam_stagnation/delta:(lam)/delta;
 
     double q_old=0.0;
-    double w_old=0.0;
-    double a_old=0.0;
-    double w=0.0;
-    double a=0.0;
-    double j=0.0;
     bool bFirst=true;
-    bool bwFirst=true;
-    bool baFirst=true;
     for(int i=1;i<iter_max;i++)
     {
         double px=rPath[i-1].px;
@@ -284,29 +277,8 @@ void Generator::predict(bool bStag)
             }
             else
             {
-                w=q-q_old;
+                q_sum+=abs(q-q_old);
                 q_old=q;
-            }
-            if(bwFirst)
-            {
-                bwFirst=bFirst?true:false;
-                w_old=w;
-            }
-            else
-            {
-                a=w-w_old;
-                w_old=w;
-            }
-            if(baFirst)
-            {
-                baFirst=bwFirst?true:false;
-                a_old=a;
-            }
-            else
-            {
-                j=a-a_old;
-                a_old=a;
-                j_sum+=abs(j);
             }
         }
         rPath.push_back({x,y,q});

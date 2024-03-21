@@ -106,7 +106,7 @@ private:
     double gPos[SIZE_STATE];
     double temporaryGoal[SIZE_STATE];
     double v_ref,q_ref;
-    double j_sum;
+    double q_sum;
     double d_sum;
     bool m_localmin;
 };
