@@ -309,14 +309,16 @@ void Generator::detLocalmin()
     }
     m_localmin=ret;
 
-    d_sum=0.0;
-    for(int i=0;i<rPath.size()-1;i++)
+    double varianceX=0.0;
+    double varianceY=0.0;
+    for(int i=0;i<rPath.size();i++)
     {
-        double diff_x = rPath.at(i+1).px-rPath.at(i).px;
-        double diff_y = rPath.at(i+1).py-rPath.at(i).py;
-        double dist   = sqrt(pow(diff_x,2)+pow(diff_y,2));
-        d_sum+=dist;
+        varianceX+=pow(rPath.at(i).px-mean_x,2);
+        varianceY+=pow(rPath.at(i).py-mean_y,2);
     }
+    varianceX/=rPath.size();
+    varianceY/=rPath.size();
+    d_sum=varianceX+varianceY;
 }
 
 void Generator::gen(genmode mode)
