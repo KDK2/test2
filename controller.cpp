@@ -187,6 +187,10 @@ void Controller::control()
     pos[INDEX_Y]=g->addNoise(pos[INDEX_Y],0.05);
     pGen=new Generator(*g,pos);
     pGen->gen(Generator::stagnation);
+    for(int i=0;i<pGen->rPath.size();i++)
+    {
+        g->rPath.push_back(pGen->rPath[i]);
+    }
     int iLocalmin=-1;
     if(!checkGoal(pGen->getPath(),true))
     {
