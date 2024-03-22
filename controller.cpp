@@ -7,6 +7,7 @@
 #define INDEX_Y 1
 #define INDEX_Q 2
 static std::ofstream file("data.csv");
+static int iter=0;
 Controller::Controller():
     s(nullptr),
     a(nullptr),
@@ -158,6 +159,11 @@ void Controller::velocity(double *src, double &v, double &w)
 #define RAD(x) ((x)*M_PI/180.0)
 void Controller::control()
 {
+    iter++;
+    if(iter>150)
+    {
+
+    }
     if(isArrived())
     {
         return;
