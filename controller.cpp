@@ -187,10 +187,6 @@ void Controller::control()
     pos[INDEX_Y]=g->addNoise(pos[INDEX_Y],0.05);
     pGen=new Generator(*g,pos);
     pGen->gen(Generator::stagnation);
-    for(int i=0;i<pGen->rPath.size();i++)
-    {
-        g->rPath.push_back(pGen->rPath[i]);
-    }
     int iLocalmin=-1;
     if(!checkGoal(pGen->getPath(),true))
     {
@@ -236,6 +232,10 @@ void Controller::control()
         //temporary골의 선택
         //temporary T 점에서 robot - goal 과의 수직하는 거리가 새로운 temporary goal T_n이 계산하는 robot - goal거리 d_n
         //보다 작으면 새로운 temporary 골이라고 정한다.
+    }
+    for(int i=0;i<pGen->rPath.size();i++)
+    {
+        g->rPath.push_back(pGen->rPath[i]);
     }
     updateGenerator();
     if(!file.is_open())
