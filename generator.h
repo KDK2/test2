@@ -82,6 +82,7 @@ public:
     void getStagPos(double* pos);
     void getTemporaryGoal(double* pos);
     void normalizeAngle(double src, double &dst);
+    double getVariance();
     double addNoise(double src,double noiseLevel=0.01);
     double calcTemporaryGoal();
     double calcTemporaryGoal(double *pos);

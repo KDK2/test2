@@ -366,6 +366,11 @@ void Generator::getTemporaryGoal(double *pos)
     pos[INDEX_Q]=temporaryGoal[INDEX_Q];
 }
 
+double Generator::getVariance()
+{
+    return d_sum;
+}
+
 void Generator::normalizeAngle(double angle, double &dst)
 {
     angle = fmod(angle, 2.0 * M_PI);

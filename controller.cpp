@@ -239,12 +239,7 @@ void Controller::control()
         std::cerr<<"fail"<<std::endl;
         return;
     }
-    std::vector<Generator::path> tempPath = pGen->getPath();
-    int iPathSize=tempPath.size();
-    for(int i=0;i<iPathSize;i++)
-    {
-        file << tempPath[i].px<< "\t" << tempPath[i].py << std::endl;
-    }
+    file << pGen->getVariance()<<std::endl;
 }
 
 void Controller::getPos(double *dst)
