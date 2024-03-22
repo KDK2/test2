@@ -160,9 +160,9 @@ void Controller::velocity(double *src, double &v, double &w)
 void Controller::control()
 {
     iter++;
-    if(iter>150)
+    if(iter>300)
     {
-
+        int de=0;
     }
     if(isArrived())
     {
