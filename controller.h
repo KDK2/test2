@@ -4,6 +4,8 @@
 #include "actuator.h"
 #include "sensor.h"
 #include "generator.h"
+#include <fstream>
+#include <iostream>
 class Controller
 {
 public:

@@ -6,6 +6,7 @@
 #define INDEX_X 0
 #define INDEX_Y 1
 #define INDEX_Q 2
+static std::ofstream file("data.csv");
 Controller::Controller():
     s(nullptr),
     a(nullptr),
@@ -17,11 +18,11 @@ Controller::Controller():
     ki(0.006),
     state(idle)
 {
-
 }
 
 Controller::~Controller()
 {
+    file.close();
     delete g;
     delete a;
     delete s;
@@ -227,6 +228,17 @@ void Controller::control()
         //보다 작으면 새로운 temporary 골이라고 정한다.
     }
     updateGenerator();
+    if(!file.is_open())
+    {
+        std::cerr<<"fail"<<std::endl;
+        return;
+    }
+    std::vector<Generator::path> tempPath = g->getPath();
+    int iPathSize=tempPath.size();
+    for(int i=0;i<iPathSize;i++)
+    {
+        file << tempPath[i].px<< "\t" << tempPath[i].py << std::endl;
+    }
 }
 
 void Controller::getPos(double *dst)
