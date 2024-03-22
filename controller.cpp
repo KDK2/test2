@@ -239,7 +239,7 @@ void Controller::control()
         std::cerr<<"fail"<<std::endl;
         return;
     }
-    std::vector<Generator::path> tempPath = g->getPath();
+    std::vector<Generator::path> tempPath = pGen->getPath();
     int iPathSize=tempPath.size();
     for(int i=0;i<iPathSize;i++)
     {
