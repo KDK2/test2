@@ -160,7 +160,7 @@ void Controller::velocity(double *src, double &v, double &w)
 void Controller::control()
 {
     iter++;
-    if(iter>160)
+    if(iter>200)
     {
         int de=0;
     }
