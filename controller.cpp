@@ -181,6 +181,15 @@ void Controller::control()
     g->setPos(rPos);
     g->setGoal(goal);
     g->gen(Generator::prediction);
+    g->gen(Generator::prediction);
+    g->gen(Generator::prediction);
+    g->gen(Generator::prediction);
+    g->gen(Generator::prediction);
+    g->gen(Generator::prediction);
+    g->gen(Generator::prediction);
+    g->gen(Generator::prediction);
+    g->gen(Generator::prediction);
+    g->gen(Generator::prediction);
     //Generator *test=nullptr;
 
     double pos[3]={g->rPath.back().px,g->rPath.back().py,g->rPath.back().pq};
