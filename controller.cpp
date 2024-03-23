@@ -157,8 +157,10 @@ void Controller::velocity(double *src, double &v, double &w)
     checkMaxVelocity(kp*e+ki*esum,w_max,w);
 }
 #define RAD(x) ((x)*M_PI/180.0)
+#include <chrono>
 void Controller::control()
 {
+    auto start = std::chrono::high_resolution_clock::now();
     iter++;
     if(iter>200)
     {
@@ -238,12 +240,15 @@ void Controller::control()
         g->rPath.push_back(pGen->rPath[i]);
     }
     updateGenerator();
-    if(!file.is_open())
-    {
-        std::cerr<<"fail"<<std::endl;
-        return;
-    }
-    file << pGen->getVariance()<<std::endl;
+    // if(!file.is_open())
+    // {
+    //     std::cerr<<"fail"<<std::endl;
+    //     return;
+    // }
+    // file << pGen->getVariance()<<std::endl;
+    auto end = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+    std::cout << "Function execution took " << duration.count() << " milliseconds." << std::endl;
 }
 
 void Controller::getPos(double *dst)
