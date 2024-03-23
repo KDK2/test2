@@ -247,8 +247,8 @@ void Controller::control()
     // }
     // file << pGen->getVariance()<<std::endl;
     auto end = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-    std::cout << "Function execution took " << duration.count() << " milliseconds." << std::endl;
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+    std::cout << "Function execution took " << duration.count() << " microseconds." << std::endl;
 }
 
 void Controller::getPos(double *dst)
