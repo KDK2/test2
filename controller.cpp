@@ -160,7 +160,6 @@ void Controller::velocity(double *src, double &v, double &w)
 #include <chrono>
 void Controller::control()
 {
-    auto start = std::chrono::high_resolution_clock::now();
     iter++;
     if(iter>200)
     {
@@ -180,15 +179,7 @@ void Controller::control()
     getGoal(goal,true);
     g->setPos(rPos);
     g->setGoal(goal);
-    g->gen(Generator::prediction);
-    g->gen(Generator::prediction);
-    g->gen(Generator::prediction);
-    g->gen(Generator::prediction);
-    g->gen(Generator::prediction);
-    g->gen(Generator::prediction);
-    g->gen(Generator::prediction);
-    g->gen(Generator::prediction);
-    g->gen(Generator::prediction);
+    auto start = std::chrono::high_resolution_clock::now();
     g->gen(Generator::prediction);
     //Generator *test=nullptr;
 
@@ -198,6 +189,9 @@ void Controller::control()
     pos[INDEX_Y]=g->addNoise(pos[INDEX_Y],0.05);
     pGen=new Generator(*g,pos);
     pGen->gen(Generator::stagnation);
+    auto end = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+    std::cout << "Function execution took " << duration.count() << " microseconds." << std::endl;
     int iLocalmin=-1;
     if(!checkGoal(pGen->getPath(),true))
     {
@@ -255,9 +249,6 @@ void Controller::control()
     //     return;
     // }
     // file << pGen->getVariance()<<std::endl;
-    auto end = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
-    std::cout << "Function execution took " << duration.count() << " microseconds." << std::endl;
 }
 
 void Controller::getPos(double *dst)
