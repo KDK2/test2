@@ -178,7 +178,7 @@ double Controller::cost(std::vector<Generator::path> path, std::vector<Generator
     varianceX/=aPath.size();
     varianceY/=aPath.size();
     cost2=varianceX+varianceY;
-
+    std::cout<<x[0]<<", "<<y[0]<<" : "<<-(w1*cost1+w2*cost2)<<std::endl;
     return -(w1*cost1+w2*cost2);
 }
 
@@ -271,7 +271,10 @@ void Controller::control()
     getGoal(goal,true);
     g->setPos(rPos);
     g->setGoal(goal);
-    auto start = std::chrono::high_resolution_clock::now();
+    // auto start = std::chrono::high_resolution_clock::now();
+    // auto end = std::chrono::high_resolution_clock::now();
+    // auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+    // std::cout << "Function execution took " << duration.count() << " microseconds." << std::endl;
     g->gen(Generator::prediction);
     //Generator *test=nullptr;
 
@@ -281,9 +284,6 @@ void Controller::control()
     pos[INDEX_Y]=g->addNoise(pos[INDEX_Y],0.05);
     pGen=new Generator(*g,pos);
     pGen->gen(Generator::stagnation);
-    auto end = std::chrono::high_resolution_clock::now();
-    auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
-    std::cout << "Function execution took " << duration.count() << " microseconds." << std::endl;
     int iLocalmin=-1;
     if(!checkGoal(pGen->getPath(),true))
     {
