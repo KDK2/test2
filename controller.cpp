@@ -297,6 +297,8 @@ void Controller::control()
     {
         for(int i=0;i<100;i++)
         {
+            opos[0]=g->addNoise(opos[0],0.01);
+            opos[1]=g->addNoise(opos[1],0.01);
             double dst[2];
             optimize(opos,dst);
             opos[INDEX_X]=dst[INDEX_X];
