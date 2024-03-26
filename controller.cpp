@@ -161,8 +161,8 @@ double Controller::cost(std::vector<Generator::path> path, std::vector<Generator
     }
     for (int i=0;i<path.size()-1;i++)
     {
-        double cross_product = x[i] * y[i+1] - x[i+1] * y[i];
-        cost1+=labs(cross_product);
+        double cross_product =x[i]*y[i+1]-x[i+1]*y[i];
+        cost1+=abs(cross_product);
     }
 
     mean_x=std::accumulate(aPath.begin(),aPath.end(),0.0,[](double sum, Generator::path p){return sum+p.px;});
