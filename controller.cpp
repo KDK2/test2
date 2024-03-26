@@ -303,6 +303,24 @@ void Controller::control()
             opos[INDEX_Y]=dst[INDEX_Y];
         }
     }
+    Generator* temp;
+    Generator* atemp;
+    temp=new Generator(*g,opos);
+    temp->gen(Generator::prediction);
+    double apos[3]={temp->getPath().back().px,temp->getPath().back().py,temp->getPath().back().pq};
+    atemp=new Generator(*g,apos);
+    atemp->gen(Generator::stagnation);
+    if(!checkGoal(atemp->getPath(),true))
+    {
+        if(atemp->isLocalmin())
+        {
+            iLocalmin=0;
+        }
+        else
+        {
+            iLocalmin=-1;
+        }
+    }
     if(iLocalmin==-1)
     {
         double d=0.0;
