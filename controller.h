@@ -30,6 +30,8 @@ public:
     void setTemporaryGoal(double x, double y, double theta, double d);
     void addGoal(double x, double y, double theta);
     void checkMaxVelocity(double vel, double vel_max, double& dst);
+    void optimize(const double *pos, double* dst);
+    double cost(std::vector<Generator::path> path, std::vector<Generator::path> aPath);
     void checkGoal();
     bool isArrived();
     bool checkGoal(std::vector<Generator::path> path,bool bGlobal);

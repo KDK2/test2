@@ -90,6 +90,98 @@ void Controller::checkMaxVelocity(double vel, double vel_max, double &dst)
     }
 }
 
+void Controller::optimize(const double *pos, double *dst)
+{
+    double delta=0.001;
+
+    std::vector<Generator::path> pfPath;
+    std::vector<Generator::path> paPath;
+    std::vector<Generator::path> mfPath;
+    std::vector<Generator::path> maPath;
+
+    double gradient[2]={0.0,0.0};
+    double learning_rate=0.1;
+    for(int i=0;i<2;i++)
+    {
+        Generator *pFuture;
+        Generator *pAdd;
+        Generator *mFuture;
+        Generator *mAdd;
+
+        double pPos[3]={pos[0],pos[1],pos[2]};
+        double mPos[3]={pos[0],pos[1],pos[2]};
+
+        pPos[i]=pos[i]+delta;
+        mPos[i]=pos[i]-delta;
+        pFuture=new Generator(*g,pPos);
+        mFuture=new Generator(*g,mPos);
+        pFuture->gen(Generator::prediction);
+        mFuture->gen(Generator::prediction);
+
+        pfPath=pFuture->getPath();
+        mfPath=mFuture->getPath();
+
+        double paPos[3]={pfPath.back().px,pfPath.back().py,pfPath.back().pq};
+        double maPos[3]={mfPath.back().px,mfPath.back().py,mfPath.back().pq};
+
+        pAdd=new Generator(*g,paPos);
+        mAdd=new Generator(*g,maPos);
+
+        pAdd->gen(Generator::stagnation);
+        mAdd->gen(Generator::stagnation);
+
+        paPath=pAdd->getPath();
+        maPath=mAdd->getPath();
+
+        gradient[i]=(cost(pfPath,paPath)-cost(mfPath,maPath))/(2.0*delta);
+    }
+    dst[0]=pos[0]-learning_rate*gradient[0];
+    dst[1]=pos[1]-learning_rate*gradient[1];
+}
+
+double Controller::cost(std::vector<Generator::path> path, std::vector<Generator::path> aPath)
+{
+    double w1,w2;//weight
+    double cost1,cost2;
+    double mean_x,mean_y;
+    double varianceX=0.0;
+    double varianceY=0.0;
+
+    w1=0.8;
+    w2=10.0;
+
+    //normalization
+    std::vector<double> x(path.size());
+    std::vector<double> y(path.size());
+
+    for(int i=0;i<path.size();i++)
+    {
+        x[i]=path.at(i).px;
+        y[i]=path.at(i).py;
+    }
+    for (int i=0;i<path.size()-1;i++)
+    {
+        double cross_product = x[i] * y[i+1] - x[i+1] * y[i];
+        cost1+=labs(cross_product);
+    }
+
+    mean_x=std::accumulate(aPath.begin(),aPath.end(),0.0,[](double sum, Generator::path p){return sum+p.px;});
+    mean_x/=aPath.size();
+    mean_y=std::accumulate(aPath.begin(),aPath.end(),0.0,[](double sum, Generator::path p){return sum+p.py;});
+    mean_y/=aPath.size();
+
+    for(int i=0;i<aPath.size();i++)
+    {
+        varianceX+=pow(aPath.at(i).px-mean_x,2);
+        varianceY+=pow(aPath.at(i).py-mean_y,2);
+    }
+    varianceX/=aPath.size();
+    varianceY/=aPath.size();
+    cost2=varianceX+varianceY;
+
+    return -(w1/cost1+w2/cost2);
+}
+
 void Controller::checkGoal()
 {
     double goal[3];
@@ -198,6 +290,17 @@ void Controller::control()
         if(pGen->isLocalmin())
         {
             iLocalmin=0;
+        }
+    }
+    double opos[3]={rPos[0],rPos[1],rPos[2]};
+    if(iLocalmin==0)
+    {
+        for(int i=0;i<100;i++)
+        {
+            double dst[2];
+            optimize(opos,dst);
+            opos[INDEX_X]=dst[INDEX_X];
+            opos[INDEX_Y]=dst[INDEX_Y];
         }
     }
     if(iLocalmin==-1)
