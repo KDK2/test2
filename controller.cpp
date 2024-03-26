@@ -295,10 +295,10 @@ void Controller::control()
     double opos[3]={rPos[0],rPos[1],rPos[2]};
     if(iLocalmin==0)
     {
-        for(int i=0;i<100;i++)
+        for(int i=0;i<500;i++)
         {
-            opos[0]=g->addNoise(opos[0],0.05);
-            opos[1]=g->addNoise(opos[1],0.05);
+            opos[0]=g->addNoise(opos[0],0.01);
+            opos[1]=g->addNoise(opos[1],0.01);
             double dst[2];
             optimize(opos,dst);
             opos[INDEX_X]=dst[INDEX_X];
