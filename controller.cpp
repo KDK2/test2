@@ -111,8 +111,8 @@ void Controller::optimize(const double *pos, double *dst)
         double pPos[3]={pos[0],pos[1],pos[2]};
         double mPos[3]={pos[0],pos[1],pos[2]};
 
-        pPos[i]=pos[i]+delta;
-        mPos[i]=pos[i]-delta;
+        pPos[i]+=delta;
+        mPos[i]-=delta;
         pFuture=new Generator(*g,pPos);
         mFuture=new Generator(*g,mPos);
         pFuture->gen(Generator::prediction);
