@@ -179,7 +179,7 @@ double Controller::cost(std::vector<Generator::path> path, std::vector<Generator
     varianceY/=aPath.size();
     cost2=varianceX+varianceY;
 
-    return -(w1/cost1+w2/cost2);
+    return -(w1*cost1+w2*cost2);
 }
 
 void Controller::checkGoal()
