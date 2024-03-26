@@ -100,7 +100,7 @@ void Controller::optimize(const double *pos, double *dst)
     std::vector<Generator::path> maPath;
 
     double gradient[2]={0.0,0.0};
-    double learning_rate=0.1;
+    double learning_rate=0.01;
     for(int i=0;i<2;i++)
     {
         Generator *pFuture;
