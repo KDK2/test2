@@ -22,6 +22,7 @@ public:
         int num_lobs;
         int num_quark;
         int num_path;
+        int num_optimized;
     };
     struct info_sensor
     {
@@ -60,6 +61,12 @@ public:
         std::vector<double> px;
         std::vector<double> py;
     };
+    struct optimized_data
+    {
+        std::vector<double> x;
+        std::vector<double> y;
+    };
+
     struct robot_data
     {
         double x;
@@ -103,6 +110,7 @@ private:
     lobs_data m_lobs_data;
     quark_data m_quark_data;
     path_data m_path_data;
+    optimized_data m_optimized_data;
     robot_data m_robot_data;
 };
 #endif // MAINWINDOW_H

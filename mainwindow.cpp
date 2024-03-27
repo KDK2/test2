@@ -81,15 +81,18 @@ void MainWindow::updateUi()
     int iLObs=m_obs.num_lobs;
     int iQuark=m_obs.num_quark;
     int iPath=m_obs.num_path;
+    int iOptimized=m_obs.num_optimized;
     double max_dist=m_sensor.max_dist;
     QVector<QCPCurveData> robot_sensor(num_sensor+1);
     QVector<QVector<QCPCurveData>> obs(iCObs);
     QVector<QVector<QCPCurveData>> quark(iQuark);
     QVector<QVector<QCPCurveData>> pth(iPath);
+    QVector<QCPCurveData> optimized(iOptimized);
     QVector<QCPCurveData> goal;
     QVector<QCPCurve*> fermatObs;
     QVector<QCPCurve*> fermatQuark;
     QVector<QCPCurve*> fermatPath;
+    QVector<QCPCurve*> fermatOptimized;
     QCPCurve* fermatGoal;
     QVector<QCPItemLine*> sensor_line;
     QCustomPlot *customPlot = ui->widget;
@@ -171,6 +174,20 @@ void MainWindow::updateUi()
         fermatPath.at(i)->data()->add(path_data,true);
         fermatPath.at(i)->setPen(QPen(Qt::yellow));
     }
+    for(int i=0;i<iOptimized;i++)
+    {
+        QCPCurve* optimized_curve = new QCPCurve(customPlot->xAxis, customPlot->yAxis);
+        fermatOptimized.append(optimized_curve);
+        double x=m_optimized_data.x[i];
+        double y=m_optimized_data.y[i];
+        double r=m_robot_data.radius-0.03;
+        for(int j=0;j<num_sensor;j++)
+        {
+            optimized.append(QCPCurveData(j, x+r*cos(2.0*M_PI*j/(num_sensor-1)), y+r*sin(2*M_PI*j/(num_sensor-1))));
+        }
+        fermatOptimized.at(i)->data()->add(optimized,true);
+        fermatOptimized.at(i)->setPen(QPen(Qt::magenta));
+    }
     fermatGoal = new QCPCurve(customPlot->xAxis, customPlot->yAxis);
     double gx=m_robot_data.goal_x;
     double gy=m_robot_data.goal_y;
@@ -202,6 +219,8 @@ void MainWindow::updateRobotData(std::vector<int> iData, std::vector<double> dDa
     m_obs.num_quark=iData[2];
     m_obs.num_path=iData[3];
     m_sensor.num_sensors=iData[4];
+    m_obs.num_optimized=iData[5];
+
 
     int index=0;
     m_sensor_data.x.clear();
@@ -252,6 +271,13 @@ void MainWindow::updateRobotData(std::vector<int> iData, std::vector<double> dDa
     {
         m_path_data.px.push_back(dData[index++]);
         m_path_data.py.push_back(dData[index++]);
+    }
+    m_optimized_data.x.clear();
+    m_optimized_data.y.clear();
+    for(int i=0;i<m_obs.num_optimized;i++)
+    {
+        m_optimized_data.x.push_back(dData[index++]);
+        m_optimized_data.y.push_back(dData[index++]);
     }
     m_sensor.max_dist=dData[index++];
     m_robot_data.x=dData[index++];

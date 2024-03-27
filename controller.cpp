@@ -90,7 +90,7 @@ void Controller::checkMaxVelocity(double vel, double vel_max, double &dst)
     }
 }
 
-void Controller::optimize(const double *pos, double *dst)
+void Controller::optimize(const double *pos, double *dst, double* cst1, double* cst2)
 {
     double delta=0.003;
 
@@ -101,6 +101,9 @@ void Controller::optimize(const double *pos, double *dst)
 
     double gradient[2]={0.0,0.0};
     double learning_rate=0.01;
+
+    std::vector<double> cost1;
+    std::vector<double> cost2;
     for(int i=0;i<2;i++)
     {
         Generator *pFuture;
@@ -132,14 +135,26 @@ void Controller::optimize(const double *pos, double *dst)
 
         paPath=pAdd->getPath();
         maPath=mAdd->getPath();
-
-        gradient[i]=(cost(pfPath,paPath)-cost(mfPath,maPath))/(2.0*delta);
+        double pc[2];//plus delta cost1,2
+        double mc[2];//minus delta cost1,2
+        double pl=cost(pfPath,paPath,pc);
+        double ml=cost(mfPath,maPath,mc);
+        gradient[i]=(pl-ml)/(2.0*delta);
+        cost1.push_back(pc[0]);
+        cost1.push_back(mc[0]);
+        cost2.push_back(pc[1]);
+        cost2.push_back(mc[1]);
+    }
+    for(int i=0;i<cost1.size();i++)
+    {
+        cst1[i]=cost1[i];
+        cst2[i]=cost2[i];
     }
     dst[0]=pos[0]-learning_rate*gradient[0];
     dst[1]=pos[1]-learning_rate*gradient[1];
 }
 
-double Controller::cost(std::vector<Generator::path> path, std::vector<Generator::path> aPath)
+double Controller::cost(std::vector<Generator::path> path, std::vector<Generator::path> aPath, double* cst)
 {
     double w1,w2;//weight
     double cost1,cost2;
@@ -215,6 +230,8 @@ double Controller::cost(std::vector<Generator::path> path, std::vector<Generator
     varianceX/=aPath.size();
     varianceY/=aPath.size();
     cost2=varianceX+varianceY;
+    cst[0]=w1*cost1;
+    cst[1]=w2*cost2;
     double px,py;
     px=path.front().px;
     py=path.front().py;
@@ -335,18 +352,23 @@ void Controller::control()
             iLocalmin=0;
         }
     }
+    int sgd_iter=500;
     double opos[3]={rPos[0],rPos[1],rPos[2]};
+    std::vector<optimized> temp_o(sgd_iter);
     if(iLocalmin==0)
     {
-        for(int i=0;i<500;i++)
+        for(int i=0;i<sgd_iter;i++)
         {
             opos[0]=g->addNoise(opos[0],0.01);
             opos[1]=g->addNoise(opos[1],0.01);
             double dst[2];
-            optimize(opos,dst);
+            optimize(opos,dst,temp_o[i].cost1,temp_o[i].cost2);
             opos[INDEX_X]=dst[INDEX_X];
             opos[INDEX_Y]=dst[INDEX_Y];
+            temp_o[i].x=opos[INDEX_X];
+            temp_o[i].y=opos[INDEX_Y];
         }
+        o=temp_o;
         Generator* temp;
         Generator* atemp;
         temp=new Generator(*g,opos);
@@ -364,6 +386,7 @@ void Controller::control()
     }
     if(iLocalmin==-1)
     {
+        o.clear();
         double d=0.0;
 
         d=g->calcTemporaryGoal();

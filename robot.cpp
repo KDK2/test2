@@ -155,6 +155,7 @@ void Robot::updateData()
     iData.push_back(con.s->vq.size());//quark size
     iData.push_back(con.g->rPath.size());//future path size
     iData.push_back(con.s->ip.sparam.num_sensors);//sensor size
+    iData.push_back(con.o.size());//optimized pos size
 
     for(int i=0;i<con.s->ip.sparam.num_sensors;i++)//sensor pos, data
     {
@@ -187,6 +188,11 @@ void Robot::updateData()
     {
         dData.push_back(con.g->rPath[i].px);
         dData.push_back(con.g->rPath[i].py);
+    }
+    for(int i=0;i<con.o.size();i++)
+    {
+        dData.push_back(con.o[i].x);
+        dData.push_back(con.o[i].y);
     }
 
     dData.push_back(con.s->ip.sparam.max_dist);
