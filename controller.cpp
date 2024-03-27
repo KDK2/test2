@@ -367,8 +367,11 @@ void Controller::control()
             opos[INDEX_Y]=dst[INDEX_Y];
             temp_o[i].x=opos[INDEX_X];
             temp_o[i].y=opos[INDEX_Y];
+            if(temp_o[i].cost2[0]>0.2)
+            {
+                o.push_back(temp_o[i]);
+            }
         }
-        o=temp_o;
         Generator* temp;
         Generator* atemp;
         temp=new Generator(*g,opos);
