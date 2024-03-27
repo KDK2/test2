@@ -357,6 +357,7 @@ void Controller::control()
     std::vector<optimized> temp_o(sgd_iter);
     if(iLocalmin==0)
     {
+        o.clear();
         for(int i=0;i<sgd_iter;i++)
         {
             opos[0]=g->addNoise(opos[0],0.01);
@@ -389,7 +390,6 @@ void Controller::control()
     }
     if(iLocalmin==-1)
     {
-        o.clear();
         double d=0.0;
 
         d=g->calcTemporaryGoal();
