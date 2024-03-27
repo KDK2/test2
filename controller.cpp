@@ -153,11 +153,48 @@ double Controller::cost(std::vector<Generator::path> path, std::vector<Generator
     //normalization
     std::vector<double> x(path.size());
     std::vector<double> y(path.size());
-
+    std::vector<double> diff_x(path.size()-1);
+    std::vector<double> diff_y(path.size()-1);
+    std::vector<double> distance(path.size()-1);
+    std::vector<double> normalized_distance(path.size()-1);
+    std::vector<double> normalized_x(path.size()-1);
+    std::vector<double> normalized_y(path.size()-1);
+    double total_distance=0.0;
     for(int i=0;i<path.size();i++)
     {
         x[i]=path.at(i).px;
         y[i]=path.at(i).py;
+    }
+    for(int i=0;i<path.size()-1;i++)
+    {
+        diff_x[i]=x[i+1]-x[i];
+        diff_y[i]=y[i+1]-y[i];
+    }
+    for(int i=0;i<path.size()-1;i++)
+    {
+        distance[i]=sqrt(pow(x[i+1]-x[i],2)+pow(y[i+1]-y[i],2));
+    }
+    for(int i=0;i<path.size()-1;i++)
+    {
+        total_distance+=distance[i];
+    }
+    for(int i=0;i<path.size();i++)
+    {
+        normalized_distance[i]=distance[i]/total_distance;
+    }
+    for(int i=0;i<path.size()-1;i++)
+    {
+        normalized_x[i]=normalized_distance[i]*diff_x[i]/distance[i];
+        normalized_y[i]=normalized_distance[i]*diff_y[i]/distance[i];
+    }
+    double cum_sum_x=0.0;
+    double cum_sum_y=0.0;
+    for(int i=0;i<path.size()-1;i++)
+    {
+        cum_sum_x+=normalized_x[i];
+        cum_sum_y+=normalized_y[i];
+        x[i]=cum_sum_x;
+        y[i]=cum_sum_y;
     }
     for (int i=0;i<path.size()-1;i++)
     {
