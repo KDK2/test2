@@ -215,7 +215,10 @@ double Controller::cost(std::vector<Generator::path> path, std::vector<Generator
     varianceX/=aPath.size();
     varianceY/=aPath.size();
     cost2=varianceX+varianceY;
-    std::cout<<x[0]<<", "<<y[0]<<" : "<<cost1<<", "<<cost2<<", "<<-(w1*cost1+w2*cost2)<<std::endl;
+    double px,py;
+    px=path.front().px;
+    py=path.front().py;
+    std::cout<<px<<", "<<py<<" : "<<cost1<<", "<<cost2<<", "<<-(w1*cost1+w2*cost2)<<std::endl;
     return -(w1*cost1+w2*cost2);
 }
 
