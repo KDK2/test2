@@ -178,7 +178,7 @@ double Controller::cost(std::vector<Generator::path> path, std::vector<Generator
     {
         total_distance+=distance[i];
     }
-    for(int i=0;i<path.size();i++)
+    for(int i=0;i<path.size()-1;i++)
     {
         normalized_distance[i]=distance[i]/total_distance;
     }
