@@ -352,7 +352,7 @@ void Controller::control()
             iLocalmin=0;
         }
     }
-    int sgd_iter=100;
+    int sgd_iter=200;
     double opos[3]={rPos[0],rPos[1],rPos[2]};
     std::vector<optimized> temp_o(sgd_iter);
     if(iLocalmin==0)
