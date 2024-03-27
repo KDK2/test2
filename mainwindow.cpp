@@ -87,7 +87,7 @@ void MainWindow::updateUi()
     QVector<QVector<QCPCurveData>> obs(iCObs);
     QVector<QVector<QCPCurveData>> quark(iQuark);
     QVector<QVector<QCPCurveData>> pth(iPath);
-    QVector<QCPCurveData> optimized(iOptimized);
+    QVector<QVector<QCPCurveData>> optimized(iOptimized);
     QVector<QCPCurveData> goal;
     QVector<QCPCurve*> fermatObs;
     QVector<QCPCurve*> fermatQuark;
@@ -183,9 +183,10 @@ void MainWindow::updateUi()
         double r=m_robot_data.radius-0.03;
         for(int j=0;j<num_sensor;j++)
         {
-            optimized.append(QCPCurveData(j, x+r*cos(2.0*M_PI*j/(num_sensor-1)), y+r*sin(2*M_PI*j/(num_sensor-1))));
+            optimized[0].append(QCPCurveData(j, x+r*cos(2.0*M_PI*j/(num_sensor-1)), y+r*sin(2*M_PI*j/(num_sensor-1))));
         }
-        fermatOptimized.at(i)->data()->add(optimized,true);
+        QVector<QCPCurveData> optimized_data=optimized.takeFirst();
+        fermatOptimized.at(i)->data()->add(optimized_data,true);
         fermatOptimized.at(i)->setPen(QPen(Qt::magenta));
     }
     fermatGoal = new QCPCurve(customPlot->xAxis, customPlot->yAxis);
