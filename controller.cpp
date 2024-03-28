@@ -363,11 +363,10 @@ void Controller::control()
     int sgd_iter=200;
     double opos[3]={rPos[0],rPos[1],rPos[2]};
     std::vector<optimized> temp_o(sgd_iter);
+    Generator* temp=nullptr;
     if(iLocalmin==0)
     {
         o.clear();
-        double mLoss=-10.0;
-        int    maxIndex=0;
         for(int i=0;i<sgd_iter;i++)
         {
             opos[0]=g->addNoise(opos[0],0.01);
@@ -378,57 +377,55 @@ void Controller::control()
             opos[INDEX_Y]=dst[INDEX_Y];
             temp_o[i].x=opos[INDEX_X];
             temp_o[i].y=opos[INDEX_Y];
-            if(i>20)
-            if(temp_o[i].loss>mLoss)
+            if(temp_o[i].cost2[0]>0.2)
             {
-                mLoss=temp_o[i].loss;
-                maxIndex=i;
+                o.push_back(temp_o[i]);
             }
-            // if(temp_o[i].cost2[0]>0.2)
-            // {
-            //     o.push_back(temp_o[i]);
-            // }
         }
-        opos[0]=temp_o[maxIndex].x;
-        opos[1]=temp_o[maxIndex].y;
-        if(mLoss>-2.0)
+        Generator* atemp;
+        temp=new Generator(*g,opos);
+        temp->gen(Generator::prediction);
+        double apos[3]={temp->getPath().back().px,temp->getPath().back().py,temp->getPath().back().pq};
+        atemp=new Generator(*g,apos);
+        atemp->gen(Generator::stagnation);
+        if(!checkGoal(atemp->getPath(),true))
         {
-            iLocalmin=-2;
+            if(atemp->isLocalmin())
+            {
+                iLocalmin=0;
+            }
         }
     }
     if(iLocalmin==-1)
     {
-        // double d=0.0;
+        double d=0.0;
+        Generator* temp_g=nullptr;
+        if(temp!=nullptr)
+        {
+            temp_g=temp;
+        }
+        else
+        {
+            temp_g=g;
+        }
+        d=temp_g->calcTemporaryGoal();
 
-        // d=g->calcTemporaryGoal();
-
-        // // if(!(d<0.01))
-        // // {
-        // double tem[3];
-        // g->getTemporaryGoal(tem);
-        // setTemporaryGoal(tem[INDEX_X],tem[INDEX_Y],tem[INDEX_Q],d);//temporary goal의 생성 기준이 필요하다...
-        // state=idle;
-        // updateGenerator();
+        // if(!(d<0.01))
+        // {
+        double tem[3];
+        temp_g->getTemporaryGoal(tem);
+        setTemporaryGoal(tem[INDEX_X],tem[INDEX_Y],tem[INDEX_Q],d);//temporary goal의 생성 기준이 필요하다...
+        state=idle;
+        updateGenerator();
         getGoal(goal,false);
-        g->setGoal(goal);
+        temp_g->setGoal(goal);
         double v_ref,q_ref,v,w;
-        g->gen(Generator::reference);
-        g->getRef(v_ref,q_ref);
+        temp_g->gen(Generator::reference);
+        temp_g->getRef(v_ref,q_ref);
 
         double ref[2]={v_ref,q_ref};
         velocity(ref,v,w);
         a->update(rPos,rPos,v,w);
-    }
-    else if(iLocalmin==-2)
-    {
-        Generator* temp;
-        temp=new Generator(*g,opos);
-        temp->gen(Generator::prediction);
-        double d=0.0;
-        d=temp->calcTemporaryGoal();
-        double tem[3];
-        temp->getTemporaryGoal(tem);
-        setTemporaryGoal(tem[INDEX_X],tem[INDEX_Y],tem[INDEX_Q],d);
     }
     else
     {
