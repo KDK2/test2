@@ -362,8 +362,10 @@ void Controller::control()
     }
     int sgd_iter=200;
     double opos[3]={rPos[0],rPos[1],rPos[2]};
+    double oppos[3]={rPos[0],rPos[1],rPos[2]};
     std::vector<optimized> temp_o(sgd_iter);
     Generator* temp=nullptr;
+    bool bfirst=true;
     if(iLocalmin==0)
     {
         o.clear();
@@ -379,11 +381,17 @@ void Controller::control()
             temp_o[i].y=opos[INDEX_Y];
             if(temp_o[i].cost2[0]>0.2)
             {
+                if(bfirst)
+                {
+                    bfirst=false;
+                    oppos[0]=opos[0];
+                    oppos[1]=opos[1];
+                }
                 o.push_back(temp_o[i]);
             }
         }
         Generator* atemp;
-        temp=new Generator(*g,opos);
+        temp=new Generator(*g,oppos);
         temp->gen(Generator::prediction);
         double apos[3]={temp->getPath().back().px,temp->getPath().back().py,temp->getPath().back().pq};
         atemp=new Generator(*g,apos);
