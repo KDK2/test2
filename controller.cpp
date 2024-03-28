@@ -89,8 +89,8 @@ void Controller::checkMaxVelocity(double vel, double vel_max, double &dst)
         dst=vel_max*vel/abs(vel);
     }
 }
-
-void Controller::optimize(const double *pos, double *dst, double* cst1, double* cst2)
+#include <algorithm>
+void Controller::optimize(const double *pos, double *dst, double* cst1, double* cst2, double& loss)
 {
     double delta=0.003;
 
@@ -104,6 +104,7 @@ void Controller::optimize(const double *pos, double *dst, double* cst1, double* 
 
     std::vector<double> cost1;
     std::vector<double> cost2;
+    std::vector<double> l;
     for(int i=0;i<2;i++)
     {
         Generator *pFuture;
@@ -137,24 +138,30 @@ void Controller::optimize(const double *pos, double *dst, double* cst1, double* 
         maPath=mAdd->getPath();
         double pc[2];//plus delta cost1,2
         double mc[2];//minus delta cost1,2
-        double pl=cost(pfPath,paPath,pc);
-        double ml=cost(mfPath,maPath,mc);
+        double ploss;
+        double mloss;
+        double pl=cost(pfPath,paPath,pc,ploss);
+        double ml=cost(mfPath,maPath,mc,mloss);
         gradient[i]=(pl-ml)/(2.0*delta);
         cost1.push_back(pc[0]);
         cost1.push_back(mc[0]);
         cost2.push_back(pc[1]);
         cost2.push_back(mc[1]);
+        l.push_back(ploss);
+        l.push_back(mloss);
     }
     for(int i=0;i<cost1.size();i++)
     {
         cst1[i]=cost1[i];
         cst2[i]=cost2[i];
     }
+    auto max_itr=std::max_element(l.begin(),l.end());
+    loss=*max_itr;
     dst[0]=pos[0]-learning_rate*gradient[0];
     dst[1]=pos[1]-learning_rate*gradient[1];
 }
 
-double Controller::cost(std::vector<Generator::path> path, std::vector<Generator::path> aPath, double* cst)
+double Controller::cost(std::vector<Generator::path> path, std::vector<Generator::path> aPath, double* cst, double& loss)
 {
     double w1,w2;//weight
     double cost1,cost2;
@@ -239,6 +246,7 @@ double Controller::cost(std::vector<Generator::path> path, std::vector<Generator
     {
         std::cout<<px<<", "<<py<<" : "<<cost1<<", "<<cost2<<", "<<-(w1*cost1+w2*cost2)<<std::endl;
     }
+    loss=-(w1*cost1+w2*cost2);
     return -(w1*cost1+w2*cost2);
 }
 
@@ -358,49 +366,48 @@ void Controller::control()
     if(iLocalmin==0)
     {
         o.clear();
+        double mLoss=-10.0;
+        int    maxIndex=0;
         for(int i=0;i<sgd_iter;i++)
         {
             opos[0]=g->addNoise(opos[0],0.01);
             opos[1]=g->addNoise(opos[1],0.01);
             double dst[2];
-            optimize(opos,dst,temp_o[i].cost1,temp_o[i].cost2);
+            optimize(opos,dst,temp_o[i].cost1,temp_o[i].cost2,temp_o[i].loss);
             opos[INDEX_X]=dst[INDEX_X];
             opos[INDEX_Y]=dst[INDEX_Y];
             temp_o[i].x=opos[INDEX_X];
             temp_o[i].y=opos[INDEX_Y];
-            if(temp_o[i].cost2[0]>0.2)
+            if(temp_o[i].loss>mLoss)
             {
-                o.push_back(temp_o[i]);
+                mLoss=temp_o[i].loss;
+                maxIndex=i;
             }
+            // if(temp_o[i].cost2[0]>0.2)
+            // {
+            //     o.push_back(temp_o[i]);
+            // }
         }
-        Generator* temp;
-        Generator* atemp;
-        temp=new Generator(*g,opos);
-        temp->gen(Generator::prediction);
-        double apos[3]={temp->getPath().back().px,temp->getPath().back().py,temp->getPath().back().pq};
-        atemp=new Generator(*g,apos);
-        atemp->gen(Generator::stagnation);
-        if(!checkGoal(atemp->getPath(),true))
+        opos[0]=temp_o[maxIndex].x;
+        opos[1]=temp_o[maxIndex].y;
+        if(mLoss<-2.0)
         {
-            if(atemp->isLocalmin())
-            {
-                iLocalmin=0;
-            }
+            iLocalmin=-2;
         }
     }
     if(iLocalmin==-1)
     {
-        double d=0.0;
+        // double d=0.0;
 
-        d=g->calcTemporaryGoal();
+        // d=g->calcTemporaryGoal();
 
-        // if(!(d<0.01))
-        // {
-        double tem[3];
-        g->getTemporaryGoal(tem);
-        setTemporaryGoal(tem[INDEX_X],tem[INDEX_Y],tem[INDEX_Q],d);//temporary goal의 생성 기준이 필요하다...
-        state=idle;
-        updateGenerator();
+        // // if(!(d<0.01))
+        // // {
+        // double tem[3];
+        // g->getTemporaryGoal(tem);
+        // setTemporaryGoal(tem[INDEX_X],tem[INDEX_Y],tem[INDEX_Q],d);//temporary goal의 생성 기준이 필요하다...
+        // state=idle;
+        // updateGenerator();
         getGoal(goal,false);
         g->setGoal(goal);
         double v_ref,q_ref,v,w;
@@ -410,6 +417,17 @@ void Controller::control()
         double ref[2]={v_ref,q_ref};
         velocity(ref,v,w);
         a->update(rPos,rPos,v,w);
+    }
+    else if(iLocalmin==-2)
+    {
+        Generator* temp;
+        temp=new Generator(*g,opos);
+        temp->gen(Generator::prediction);
+        double d=0.0;
+        d=temp->calcTemporaryGoal();
+        double tem[3];
+        temp->getTemporaryGoal(tem);
+        setTemporaryGoal(tem[INDEX_X],tem[INDEX_Y],tem[INDEX_Q],d);
     }
     else
     {
