@@ -390,7 +390,7 @@ void Controller::control()
         }
         opos[0]=temp_o[maxIndex].x;
         opos[1]=temp_o[maxIndex].y;
-        if(mLoss<-2.0)
+        if(mLoss>-2.0)
         {
             iLocalmin=-2;
         }
