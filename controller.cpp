@@ -381,13 +381,15 @@ void Controller::control()
             temp_o[i].y=opos[INDEX_Y];
             if(temp_o[i].cost2[0]>0.2)
             {
-                o.push_back(temp_o[i]);
                 if(temp_o[i].loss<-2.0)
-                if(bfirst)
                 {
-                    bfirst=false;
-                    oppos[0]=opos[0];
-                    oppos[1]=opos[1];
+                    o.push_back(temp_o[i]);
+                    if(bfirst)
+                    {
+                        bfirst=false;
+                        oppos[0]=opos[0];
+                        oppos[1]=opos[1];
+                    }
                 }
             }
         }
