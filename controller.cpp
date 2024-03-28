@@ -378,6 +378,7 @@ void Controller::control()
             opos[INDEX_Y]=dst[INDEX_Y];
             temp_o[i].x=opos[INDEX_X];
             temp_o[i].y=opos[INDEX_Y];
+            if(i>20)
             if(temp_o[i].loss>mLoss)
             {
                 mLoss=temp_o[i].loss;
