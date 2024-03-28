@@ -382,7 +382,7 @@ void Controller::control()
             if(temp_o[i].cost2[0]>0.2)
             {
                 o.push_back(temp_o[i]);
-                if(temp_o[i].loss<-1.3)
+                if(temp_o[i].loss<-2.0)
                 if(bfirst)
                 {
                     bfirst=false;
