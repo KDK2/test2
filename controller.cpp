@@ -381,7 +381,7 @@ void Controller::control()
             temp_o[i].y=opos[INDEX_Y];
             if(temp_o[i].cost2[0]>0.2)
             {
-                if(temp_o[i].loss<-1.0)
+                if(temp_o[i].loss<-1.3)
                 if(bfirst)
                 {
                     bfirst=false;
