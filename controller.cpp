@@ -403,6 +403,10 @@ void Controller::control()
             {
                 iLocalmin=0;
             }
+            else
+            {
+                iLocalmin=-1;
+            }
         }
     }
     if(iLocalmin==-1)
