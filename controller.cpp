@@ -443,10 +443,10 @@ void Controller::control()
         state=idle;
         updateGenerator();
         getGoal(goal,false);
-        temp_g->setGoal(goal);
+        g->setGoal(goal);
         double v_ref,q_ref,v,w;
-        temp_g->gen(Generator::reference);
-        temp_g->getRef(v_ref,q_ref);
+        g->gen(Generator::reference);
+        g->getRef(v_ref,q_ref);
 
         double ref[2]={v_ref,q_ref};
         velocity(ref,v,w);
