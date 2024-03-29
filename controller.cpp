@@ -402,7 +402,7 @@ void Controller::control()
             }
             oppos[INDEX_X]=o[min_index].x;
             oppos[INDEX_Y]=o[min_index].y;
-            std::cout<<"min_loss : "<<min_loss<<oppos[INDEX_X]<<oppos[INDEX_Y]<<std::endl;
+            std::cout<<"min_loss : "<<min_loss<<" "<<oppos[INDEX_X]<<" "<<oppos[INDEX_Y]<<std::endl;
             Generator* atemp;
             temp=new Generator(*g,oppos);
             temp->gen(Generator::prediction);
