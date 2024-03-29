@@ -340,9 +340,9 @@ void Controller::control()
     }
     bool bDetect=false;
     detectLocalminimum(bDetect);
+    updateGenerator();
     setState(bDetect);
     planing();
-    updateGenerator();
     moveGoal();
 }
 
