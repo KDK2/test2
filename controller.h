@@ -19,7 +19,7 @@ public:
         double d;
         bool   arrived;
     };
-    struct optimized
+    struct optimized_data
     {
         double x;
         double y;
@@ -31,12 +31,14 @@ public:
     enum con_state
     {
         idle,
-        localminimum
+        localminimum,
+        optimized
     };
     void setSensor(Sensor* sensor);//original pointer
     void setActuator(Actuator* actuator);//original pointer
     void setGenerator(Generator* generator);//original pointer
     void setTemporaryGoal(double x, double y, double theta, double d);
+    void setOptimizedTemporaryGoal(double x, double y, double theta);
     void addGoal(double x, double y, double theta);
     void checkMaxVelocity(double vel, double vel_max, double& dst);
     void optimize(const double *pos, double* dst, double* cst1, double* cst2, double& loss);
@@ -47,18 +49,25 @@ public:
 
     void velocity(double* src, double& v,double& w);
     void control();
+    void detectLocalminimum(bool& bLocalminimum);
+    void setState(bool bLocalminimum);
+    void planing();
+    void moveGoal();
 
     void getPos(double* dst);
     void getGoal(double* dst,bool bGlobal);
     void getConState(con_state& dst);
+
     Sensor* s;
     Actuator* a;
     Generator* g;
 
-    std::vector<optimized> o;
+    std::vector<optimized_data> o;
+    double stag_pos[2];
 private:
     void updateGenerator();
     goal temporary;
+    goal temporary_o;
     std::vector<goal> goals;
 
     double rPos[3];//robot state

@@ -347,16 +347,13 @@ void Generator::getRef(double &v, double &q)
 
 void Generator::getStagPos(double *pos)
 {
-    if(m_localmin)
-    {
-        double mean_x, mean_y;
-        mean_x=std::accumulate(rPath.begin(),rPath.end(),0.0,[](double sum, path p){return sum+p.px;});
-        mean_x/=rPath.size();
-        mean_y=std::accumulate(rPath.begin(),rPath.end(),0.0,[](double sum, path p){return sum+p.py;});
-        mean_y/=rPath.size();
-        pos[INDEX_X]=mean_x;
-        pos[INDEX_Y]=mean_y;
-    }
+    double mean_x, mean_y;
+    mean_x=std::accumulate(rPath.begin(),rPath.end(),0.0,[](double sum, path p){return sum+p.px;});
+    mean_x/=rPath.size();
+    mean_y=std::accumulate(rPath.begin(),rPath.end(),0.0,[](double sum, path p){return sum+p.py;});
+    mean_y/=rPath.size();
+    pos[INDEX_X]=mean_x;
+    pos[INDEX_Y]=mean_y;
 }
 #include <random>
 void Generator::getTemporaryGoal(double *pos)

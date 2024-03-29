@@ -13,6 +13,7 @@ Controller::Controller():
     a(nullptr),
     g(nullptr),
     temporary({0,0,0,0,true}),
+    temporary_o({0,0,0,0,true}),
     rPos({0,0,0}),
     esum(0.0),
     kp(6.0),
@@ -58,13 +59,21 @@ void Controller::setGenerator(Generator *generator)
 
 void Controller::setTemporaryGoal(double x, double y, double theta, double d)
 {
-    //if(!(d>temporary.d)) return;
+    if(!(d>temporary.d)) return;
     temporary.x=x;
     temporary.y=y;
     temporary.theta=theta;
     temporary.arrived=false;
     temporary.d=d;
-    //s->vq.clear();
+    esum=0.0;
+}
+
+void Controller::setOptimizedTemporaryGoal(double x, double y, double theta)
+{
+    temporary_o.arrived=false;
+    temporary_o.x=x;
+    temporary_o.y=y;
+    temporary_o.theta=theta;
     esum=0.0;
 }
 
@@ -155,8 +164,8 @@ void Controller::optimize(const double *pos, double *dst, double* cst1, double* 
         cst1[i]=cost1[i];
         cst2[i]=cost2[i];
     }
-    auto max_itr=std::max_element(l.begin(),l.end());
-    loss=*max_itr;
+    auto min_itr=std::min_element(l.begin(),l.end());
+    loss=*min_itr;
     dst[0]=pos[0]-learning_rate*gradient[0];
     dst[1]=pos[1]-learning_rate*gradient[1];
 }
@@ -329,56 +338,113 @@ void Controller::control()
     {
         return;
     }
-    double lam=g->ip.p_param.lparam.lam;
-    double lam_stagnation=g->ip.p_param.lparam.lam_stagnation;
-    double delta=g->ip.p_param.lparam.delta;
-    int    iter_max=(lam_stagnation)/delta;
+    bool bDetect=false;
+    detectLocalminimum(bDetect);
+    setState(bDetect);
+    planing();
+    moveGoal();
+    updateGenerator();
+}
 
-    Generator* pGen;//stagnation genarator
-    double goal[3];
-    getGoal(goal,true);
-    g->setPos(rPos);
-    g->setGoal(goal);
-    // auto start = std::chrono::high_resolution_clock::now();
-    // auto end = std::chrono::high_resolution_clock::now();
-    // auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
-    // std::cout << "Function execution took " << duration.count() << " microseconds." << std::endl;
+void Controller::detectLocalminimum(bool& bLocalminimum)
+{
+    Generator* pGen;
+    double target[3];
+    double lastPredict[3];
+    double refPos[3];
+    if(idle==state)
+    {
+        memcpy(refPos,rPos,sizeof(double)*3);
+    }
+    else if(localminimum==state)
+    {
+        double tg[3];
+        getGoal(tg,false);//get temporary goal
+        memcpy(refPos,tg,sizeof(double)*3);
+    }
+    else if(optimized==state)
+    {
+        memcpy(refPos,rPos,sizeof(double)*3);
+    }
+    getGoal(target,true);
+    g->setPos(refPos);
+    g->setGoal(target);
     g->gen(Generator::prediction);
-    //Generator *test=nullptr;
-
-    double pos[3]={g->rPath.back().px,g->rPath.back().py,g->rPath.back().pq};
-    pos[INDEX_Q]=g->addNoise(pos[INDEX_Q],RAD(3.0));
-    pos[INDEX_X]=g->addNoise(pos[INDEX_X],0.05);
-    pos[INDEX_Y]=g->addNoise(pos[INDEX_Y],0.05);
-    pGen=new Generator(*g,pos);
+    std::vector<Generator::path> temp;
+    temp=g->getPath();
+    lastPredict[0]=g->addNoise(temp.back().px,0.05);
+    lastPredict[1]=g->addNoise(temp.back().py,0.05);
+    lastPredict[2]=g->addNoise(temp.back().pq,RAD(3.0));
+    pGen=new Generator(*g,lastPredict);
     pGen->gen(Generator::stagnation);
-    int iLocalmin=-1;
+    pGen->getStagPos(stag_pos);
     if(!checkGoal(pGen->getPath(),true))
     {
         if(pGen->isLocalmin())
         {
-            iLocalmin=0;
+            bLocalminimum=true;
+        }
+        else
+        {
+            bLocalminimum=false;
         }
     }
-    int sgd_iter=200;
-    double opos[3]={rPos[0],rPos[1],rPos[2]};
-    double oppos[3]={rPos[0],rPos[1],rPos[2]};
-    std::vector<optimized> temp_o(sgd_iter);
-    Generator* temp=nullptr;
-    bool bfirst=true;
-    if(iLocalmin==0)
+    else
+    {
+        bLocalminimum=false;
+    }
+}
+
+void Controller::setState(bool bLocalminimum)
+{
+    if(bLocalminimum)
+    {
+        if     (idle==state)         state=localminimum;
+        else if(localminimum==state) state=localminimum;
+        else if(optimized==state)    state=optimized;
+    }
+    else
+    {
+        if     (idle==state)         state=idle;
+        else if(localminimum==state) state=optimized;
+        else if(optimized==state)    state=idle;
+    }
+}
+
+void Controller::planing()
+{
+    //optimize when detect localminimum
+    //this function run when state is idle or localminimum
+    //set temporary goal
+    Generator* ref=nullptr;
+    double d=0.0;
+    double tg[3];
+    if(idle==state)
+    {
+        //calc temporary goal
+        //set temporary goal
+        ref=g;
+        d=ref->calcTemporaryGoal();
+        ref->getTemporaryGoal(tg);
+        setTemporaryGoal(tg[0],tg[1],tg[2],d);
+        return;
+    }
+    else if(localminimum==state)
     {
         o.clear();
+        int sgd_iter=200;
+        double opos[3]={rPos[0],rPos[1],rPos[2]};
+        std::vector<optimized_data>temp_o(sgd_iter);
         for(int i=0;i<sgd_iter;i++)
         {
             opos[0]=g->addNoise(opos[0],0.01);
             opos[1]=g->addNoise(opos[1],0.01);
             double dst[2];
             optimize(opos,dst,temp_o[i].cost1,temp_o[i].cost2,temp_o[i].loss);
-            opos[INDEX_X]=dst[INDEX_X];
-            opos[INDEX_Y]=dst[INDEX_Y];
-            temp_o[i].x=opos[INDEX_X];
-            temp_o[i].y=opos[INDEX_Y];
+            opos[0]=dst[0];
+            opos[1]=dst[1];
+            temp_o[i].x=opos[0];
+            temp_o[i].y=opos[1];
             if(temp_o[i].cost2[0]>0.2)
             {
                 if(temp_o[i].loss<-2.0)
@@ -389,96 +455,47 @@ void Controller::control()
         }
         if(o.size()>0)
         {
-            //find min index
-            int min_index=0;
-            double min_loss=o[0].loss;
-            for(int i=1;i<o.size();i++)
-            {
-                if(min_loss>o[i].loss)
-                {
-                    min_loss=o[i].loss;
-                    min_index=i;
-                }
-            }
-            oppos[INDEX_X]=o[min_index].x;
-            oppos[INDEX_Y]=o[min_index].y;
-            std::cout<<"min_loss : "<<min_loss<<" "<<oppos[INDEX_X]<<" "<<oppos[INDEX_Y]<<std::endl;
-            Generator* atemp;
-            temp=new Generator(*g,oppos);
-            temp->gen(Generator::prediction);
-            double apos[3]={temp->getPath().back().px,temp->getPath().back().py,temp->getPath().back().pq};
-            atemp=new Generator(*g,apos);
-            atemp->gen(Generator::stagnation);
-            if(!checkGoal(atemp->getPath(),true))
-            {
-                if(atemp->isLocalmin())
-                {
-                    iLocalmin=0;
-                }
-            }
-            else
-            {
-                iLocalmin=-1;
-            }
-        }
-    }
-    if(iLocalmin==-1)
-    {
-        double d=0.0;
-        Generator* temp_g=nullptr;
-        if(temp!=nullptr)
-        {
-            temp_g=temp;
+            auto minIt = std::min_element(o.begin(), o.end(),
+                                          [](const optimized_data& a, const optimized_data& b){return a.loss < b.loss;});
+            int minIndex = std::distance(o.begin(), minIt);
+            opos[0]=o[minIndex].x;
+            opos[1]=o[minIndex].y;
+            ref=new Generator(*g,opos);
+            ref->gen(Generator::prediction);
+            ref->calcTemporaryGoal();
+            ref->getTemporaryGoal(tg);
+            setOptimizedTemporaryGoal(tg[0],tg[1],tg[2]);
+            temporary=temporary_o;
         }
         else
         {
-            temp_g=g;
+            s->addQuark(stag_pos[0],stag_pos[1]);
         }
-        d=temp_g->calcTemporaryGoal();
-
-        // if(!(d<0.01))
-        // {
-        double tem[3];
-        temp_g->getTemporaryGoal(tem);
-        setTemporaryGoal(tem[INDEX_X],tem[INDEX_Y],tem[INDEX_Q],d);//temporary goal의 생성 기준이 필요하다...
-        state=idle;
-        updateGenerator();
-        getGoal(goal,false);
-        g->setGoal(goal);
-        double v_ref,q_ref,v,w;
-        g->gen(Generator::reference);
-        g->getRef(v_ref,q_ref);
-
-        double ref[2]={v_ref,q_ref};
-        velocity(ref,v,w);
-        a->update(rPos,rPos,v,w);
+        //run optimize
+        //select best loss
+        //calc temporary goal
+        //set temporary goal
+        return;
     }
-    else
-    {
-        double qpos[2];
+}
 
-        if(state==idle)
-        {
-            state=localminimum;
-        }
-        pGen->getStagPos(qpos);
-        s->addQuark(qpos[INDEX_X],qpos[INDEX_Y]);
+void Controller::moveGoal()
+{
+    //this function run when state is idle or optimized
+    if(localminimum==state)
+        return;
 
-        //temporary골의 선택
-        //temporary T 점에서 robot - goal 과의 수직하는 거리가 새로운 temporary goal T_n이 계산하는 robot - goal거리 d_n
-        //보다 작으면 새로운 temporary 골이라고 정한다.
-    }
-    for(int i=0;i<pGen->rPath.size();i++)
-    {
-        g->rPath.push_back(pGen->rPath[i]);
-    }
-    updateGenerator();
-    // if(!file.is_open())
-    // {
-    //     std::cerr<<"fail"<<std::endl;
-    //     return;
-    // }
-    // file << pGen->getVariance()<<std::endl;
+    double tg[3];
+    double v_ref,q_ref,v,w;
+    double ref[2];
+    getGoal(tg,false);
+    g->setGoal(tg);
+    g->gen(Generator::reference);
+    g->getRef(v_ref,q_ref);
+    ref[0]=v_ref;
+    ref[1]=q_ref;
+    velocity(ref,v,w);
+    a->update(rPos,rPos,v,w);
 }
 
 void Controller::getPos(double *dst)
