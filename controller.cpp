@@ -415,10 +415,10 @@ void Controller::control()
                 {
                     iLocalmin=0;
                 }
-                else
-                {
-                    iLocalmin=-1;
-                }
+            }
+            else
+            {
+                iLocalmin=-1;
             }
         }
     }
