@@ -360,6 +360,17 @@ void Controller::control()
             iLocalmin=0;
         }
     }
+    if(!checkGoal(pGen->getPath(),false))
+    {
+        if(pGen->isLocalmin())
+        {
+            iLocalmin=0;
+        }
+    }
+    else
+    {
+        iLocalmin=-1;
+    }
     int sgd_iter=200;
     double opos[3]={rPos[0],rPos[1],rPos[2]};
     double oppos[3]={rPos[0],rPos[1],rPos[2]};
