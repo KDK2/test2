@@ -242,10 +242,10 @@ double Controller::cost(std::vector<Generator::path> path, std::vector<Generator
     double px,py;
     px=path.front().px;
     py=path.front().py;
-    if(w2*cost2>0.2)
-    {
-        std::cout<<px<<", "<<py<<" : "<<cost1<<", "<<cost2<<", "<<-(w1*cost1+w2*cost2)<<std::endl;
-    }
+    // if(w2*cost2>0.2)
+    // {
+    //     std::cout<<px<<", "<<py<<" : "<<cost1<<", "<<cost2<<", "<<-(w1*cost1+w2*cost2)<<std::endl;
+    // }
     loss=-(w1*cost1+w2*cost2);
     return -(w1*cost1+w2*cost2);
 }
@@ -360,17 +360,6 @@ void Controller::control()
             iLocalmin=0;
         }
     }
-    if(!checkGoal(pGen->getPath(),false))
-    {
-        if(pGen->isLocalmin())
-        {
-            iLocalmin=0;
-        }
-    }
-    else
-    {
-        iLocalmin=-1;
-    }
     int sgd_iter=200;
     double opos[3]={rPos[0],rPos[1],rPos[2]};
     double oppos[3]={rPos[0],rPos[1],rPos[2]};
@@ -413,7 +402,7 @@ void Controller::control()
             }
             oppos[INDEX_X]=o[min_index].x;
             oppos[INDEX_Y]=o[min_index].y;
-            std::cout<<"min_loss : "<<min_loss<<std::endl;
+            std::cout<<"min_loss : "<<min_loss<<oppos[INDEX_X]<<oppos[INDEX_Y]<<std::endl;
             Generator* atemp;
             temp=new Generator(*g,oppos);
             temp->gen(Generator::prediction);
