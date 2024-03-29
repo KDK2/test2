@@ -342,9 +342,8 @@ void Controller::control()
     detectLocalminimum(bDetect);
     setState(bDetect);
     planing();
-    moveGoal();
     updateGenerator();
-    std::cout<<"state : "<<state;
+    moveGoal();
 }
 
 void Controller::detectLocalminimum(bool& bLocalminimum)
