@@ -384,14 +384,24 @@ void Controller::control()
                 if(temp_o[i].loss<-2.0)
                 {
                     o.push_back(temp_o[i]);
-                    if(bfirst)
-                    {
-                        bfirst=false;
-                        oppos[0]=opos[0];
-                        oppos[1]=opos[1];
-                    }
                 }
             }
+        }
+        if(o.size()>0)
+        {
+            //find min index
+            int min_index=0;
+            double min_loss=o[0].loss;
+            for(int i=1;i<o.size();i++)
+            {
+                if(min_loss>o[i].loss)
+                {
+                    min_loss=o[i].loss;
+                    min_index=i;
+                }
+            }
+            oppos[INDEX_X]=o[min_index].x;
+            oppos[INDEX_Y]=o[min_index].y;
         }
         Generator* atemp;
         temp=new Generator(*g,oppos);
