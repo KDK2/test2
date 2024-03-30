@@ -475,9 +475,9 @@ void Controller::planing()
             }
             double d =g->calcTemporaryGoal();
             g->getTemporaryGoal(tg);
-            setTemporaryGoal(tg[0],tg[1],tg[2],d);
-            //setOptimizedTemporaryGoal(tg[0],tg[1],tg[2]);
-            //temporary=temporary_o;
+            //setTemporaryGoal(tg[0],tg[1],tg[2],d);
+            setOptimizedTemporaryGoal(tg[0],tg[1],tg[2]);
+            temporary=temporary_o;
         }
         else
         {
