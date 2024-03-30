@@ -345,11 +345,12 @@ void Controller::control()
     }
     bool bDetect=false;
     detectLocalminimum(bDetect);
-    setState(bDetect);
-    if(optimized==state)
+    if(localminimum==state)
     {
-        std::cout<<"optimized!"<<std::endl;
+        if(bDetect==false)
+            std::cout<<"optimized!"<<std::endl;
     }
+    setState(bDetect);
     planing();
     updateGenerator();
     moveGoal();
