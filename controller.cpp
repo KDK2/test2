@@ -457,7 +457,7 @@ void Controller::planing()
             opos[1]=dst[1];
             temp_o[i].x=opos[0];
             temp_o[i].y=opos[1];
-            if(temp_o[i].loss<-1.5)
+            if(temp_o[i].loss<-2.0)
             {
                 o.push_back(temp_o[i]);
             }
