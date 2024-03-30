@@ -109,7 +109,7 @@ void Controller::optimize(const double *pos, double *dst, double* cst1, double* 
     std::vector<Generator::path> maPath;
 
     double gradient[2]={0.0,0.0};
-    double learning_rate=0.005;
+    double learning_rate=0.008;
 
     std::vector<double> cost1;
     std::vector<double> cost2;
