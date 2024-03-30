@@ -382,9 +382,9 @@ void Controller::detectLocalminimum(bool& bLocalminimum)
     pRef->gen(Generator::prediction);
     std::vector<Generator::path> temp;
     temp=pRef->getPath();
-    lastPredict[0]=pRef->addNoise(temp.back().px,0.01);
-    lastPredict[1]=pRef->addNoise(temp.back().py,0.01);
-    lastPredict[2]=pRef->addNoise(temp.back().pq,RAD(1.0));
+    lastPredict[0]=pRef->addNoise(temp.back().px,0.003);
+    lastPredict[1]=pRef->addNoise(temp.back().py,0.003);
+    lastPredict[2]=pRef->addNoise(temp.back().pq,RAD(0.2));
     pGen=new Generator(*pRef,lastPredict);
     pGen->gen(Generator::stagnation);
     pGen->getStagPos(stag_pos);
