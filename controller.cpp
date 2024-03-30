@@ -251,7 +251,7 @@ double Controller::cost(std::vector<Generator::path> path, std::vector<Generator
     double px,py;
     px=path.front().px;
     py=path.front().py;
-    std::cout<<px<<", "<<py<<" : "<<cost1<<", "<<cost2<<", "<<-(w1*cost1+w2*cost2)<<std::endl;
+    //std::cout<<px<<", "<<py<<" : "<<cost1<<", "<<cost2<<", "<<-(w1*cost1+w2*cost2)<<std::endl;
     loss=-(w1*cost1+w2*cost2);
     return -(w1*cost1+w2*cost2);
 }
@@ -463,6 +463,7 @@ void Controller::planing()
             auto minIt = std::min_element(o.begin(), o.end(),
                                           [](const optimized_data& a, const optimized_data& b){return a.loss < b.loss;});
             int minIndex = std::distance(o.begin(), minIt);
+            std::cout<<"loss : "<<o[minIndex].loss<<std::endl;
             opos[0]=o[minIndex].x;
             opos[1]=o[minIndex].y;
             ref=new Generator(*g,opos);
