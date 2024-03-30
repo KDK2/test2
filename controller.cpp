@@ -348,6 +348,8 @@ void Controller::control()
 
 void Controller::detectLocalminimum(bool& bLocalminimum)
 {
+    Generator* pRef=nullptr;
+    Generator* pLocal=nullptr;
     Generator* pGen;
     double target[3];
     double lastPredict[3];
@@ -355,27 +357,31 @@ void Controller::detectLocalminimum(bool& bLocalminimum)
     if(idle==state)
     {
         memcpy(refPos,rPos,sizeof(double)*3);
+        pRef=g;
     }
     else if(localminimum==state)
     {
         double tg[3];
         getGoal(tg,false);//get temporary goal
         memcpy(refPos,tg,sizeof(double)*3);
+        pLocal=new Generator(*g,refPos);
+        pRef=pLocal;
     }
     else if(optimized==state)
     {
         memcpy(refPos,rPos,sizeof(double)*3);
+        pRef=g;
     }
     getGoal(target,true);
-    g->setPos(refPos);
-    g->setGoal(target);
-    g->gen(Generator::prediction);
+    pRef->setPos(refPos);
+    pRef->setGoal(target);
+    pRef->gen(Generator::prediction);
     std::vector<Generator::path> temp;
-    temp=g->getPath();
-    lastPredict[0]=g->addNoise(temp.back().px,0.05);
-    lastPredict[1]=g->addNoise(temp.back().py,0.05);
-    lastPredict[2]=g->addNoise(temp.back().pq,RAD(3.0));
-    pGen=new Generator(*g,lastPredict);
+    temp=pRef->getPath();
+    lastPredict[0]=pRef->addNoise(temp.back().px,0.05);
+    lastPredict[1]=pRef->addNoise(temp.back().py,0.05);
+    lastPredict[2]=pRef->addNoise(temp.back().pq,RAD(3.0));
+    pGen=new Generator(*pRef,lastPredict);
     pGen->gen(Generator::stagnation);
     pGen->getStagPos(stag_pos);
     if(!checkGoal(pGen->getPath(),true))
@@ -489,7 +495,6 @@ void Controller::moveGoal()
     double v_ref,q_ref,v,w;
     double ref[2];
     getGoal(tg,false);
-    g->setPos(rPos);
     g->setGoal(tg);
     g->gen(Generator::reference);
     g->getRef(v_ref,q_ref);
