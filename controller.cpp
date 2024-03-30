@@ -500,6 +500,16 @@ void Controller::planing()
         //set temporary goal
         return;
     }
+    else if(optimized==state)
+    {
+        for(int i=0;i<optimized_path.size();i++)
+        {
+            g->rPath.push_back(optimized_path[i]);
+        }
+        double d =g->calcTemporaryGoal();
+        g->getTemporaryGoal(tg);
+        setTemporaryGoal(tg[0],tg[1],tg[2],d);
+    }
 }
 
 void Controller::moveGoal()
