@@ -109,7 +109,7 @@ void Controller::optimize(const double *pos, double *dst, double* cst1, double* 
     std::vector<Generator::path> maPath;
 
     double gradient[2]={0.0,0.0};
-    double learning_rate=0.015;
+    double learning_rate=0.008;
 
     std::vector<double> cost1;
     std::vector<double> cost2;
@@ -178,7 +178,7 @@ double Controller::cost(std::vector<Generator::path> path, std::vector<Generator
     double varianceX=0.0;
     double varianceY=0.0;
 
-    w1=0.0;
+    w1=0.8;
     w2=10.0;
 
     //normalization
