@@ -178,7 +178,7 @@ double Controller::cost(std::vector<Generator::path> path, std::vector<Generator
     double varianceX=0.0;
     double varianceY=0.0;
 
-    w1=0.9;
+    w1=0.8;
     w2=10.0;
 
     //normalization
@@ -455,7 +455,8 @@ void Controller::planing()
             opos[1]=dst[1];
             temp_o[i].x=opos[0];
             temp_o[i].y=opos[1];
-            o.push_back(temp_o[i]);
+            if(temp_o[i].loss<-0.15)
+                o.push_back(temp_o[i]);
         }
         if(o.size()>0)
         {
