@@ -48,7 +48,7 @@ Robot::Robot():
     con.getGoal(cgoal,true);
 
     sen=new Sensor(is);
-    sen->addLObs(1.8,2.52,1.799,2.57);
+    sen->addLObs(1.8,2.52,1.801,2.57);
     sen->addLObs(1.8,2.52,2.5,2.5);
     sen->addLObs(2.5,2.5,2.48,1.8);
     sen->addLObs(2.48,1.8,2.53,1.801);
