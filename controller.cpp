@@ -227,7 +227,7 @@ double Controller::cost(std::vector<Generator::path> path, std::vector<Generator
         x[i]=cum_sum_x;
         y[i]=cum_sum_y;
     }
-    for (int i=0;i<path.size()-1;i++)
+    for (int i=0;i<path.size()-2;i++)
     {
         double cross_product =x[i]*y[i+1]-x[i+1]*y[i];
         cost1+=abs(cross_product);
