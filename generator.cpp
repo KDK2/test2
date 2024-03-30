@@ -384,7 +384,7 @@ double Generator::addNoise(double src, double noiseLevel)
 {
     std::random_device rd;
     std::mt19937 gen(rd());
-    std::normal_distribution<> d(0.0,noiseLevel);
+    std::normal_distribution<double> d(0.0,noiseLevel);
     return src+d(gen);
 }
 
