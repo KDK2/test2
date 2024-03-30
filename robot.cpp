@@ -49,10 +49,10 @@ Robot::Robot():
 
     sen=new Sensor(is);
     sen->addLObs(1.79,2.72,2.66,2.74);
-    sen->addLObs(1.8,2.52,1.79,2.72);
-    sen->addLObs(1.8,2.52,2.5,2.5);
-    sen->addLObs(2.5,2.5,2.48,1.8);
-    sen->addLObs(2.48,1.8,2.68,1.81);
+    // sen->addLObs(1.8,2.52,1.79,2.72);
+    // sen->addLObs(1.8,2.52,2.5,2.5);
+    // sen->addLObs(2.5,2.5,2.48,1.8);
+    // sen->addLObs(2.48,1.8,2.68,1.81);
     sen->addLObs(2.68,1.81,2.66,2.74);
 
     // sen->addCObs(0.0,3.0,0.4);
