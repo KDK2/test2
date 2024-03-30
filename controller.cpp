@@ -346,6 +346,10 @@ void Controller::control()
     bool bDetect=false;
     detectLocalminimum(bDetect);
     setState(bDetect);
+    if(optimized==state)
+    {
+        std::cout<<"optimized!"<<std::endl;
+    }
     planing();
     updateGenerator();
     moveGoal();
