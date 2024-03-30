@@ -334,11 +334,6 @@ void Controller::velocity(double *src, double &v, double &w)
 #include <chrono>
 void Controller::control()
 {
-    iter++;
-    if(iter>250)
-    {
-        int de=0;
-    }
     if(isArrived())
     {
         return;
