@@ -396,6 +396,10 @@ void Controller::detectLocalminimum(bool& bLocalminimum)
         if(pGen->isLocalmin())
         {
             bLocalminimum=true;
+            if(localminimum==state)
+            {
+                s->addQuark(stag_pos[0],stag_pos[1]);
+            }
         }
         else
         {
@@ -487,10 +491,6 @@ void Controller::planing()
             std::cout<<"goal: "<<tg[0]<<", "<<tg[1]<<std::endl;
             //setOptimizedTemporaryGoal(tg[0],tg[1],tg[2]);
             //temporary=temporary_o;
-        }
-        else
-        {
-            s->addQuark(stag_pos[0],stag_pos[1]);
         }
         //run optimize
         //select best loss
