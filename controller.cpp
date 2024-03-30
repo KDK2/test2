@@ -450,7 +450,7 @@ void Controller::planing()
     {
         o.clear();
         optimized_path.clear();
-        int sgd_iter=300;
+        int sgd_iter=200;
         double opos[3]={rPos[0],rPos[1],rPos[2]};
         std::vector<optimized_data>temp_o(sgd_iter);
         for(int i=0;i<sgd_iter;i++)
