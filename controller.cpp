@@ -342,6 +342,7 @@ void Controller::control()
     detectLocalminimum(bDetect);
     setState(bDetect);
     planing();
+    updateGenerator();
     moveGoal();
 }
 
@@ -481,7 +482,6 @@ void Controller::planing()
 void Controller::moveGoal()
 {
     //this function run when state is idle or optimized
-    updateGenerator();
     if(localminimum==state)
         return;
 
@@ -489,6 +489,7 @@ void Controller::moveGoal()
     double v_ref,q_ref,v,w;
     double ref[2];
     getGoal(tg,false);
+    g->setPos(rPos);
     g->setGoal(tg);
     g->gen(Generator::reference);
     g->getRef(v_ref,q_ref);
