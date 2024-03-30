@@ -178,7 +178,7 @@ double Controller::cost(std::vector<Generator::path> path, std::vector<Generator
     double varianceX=0.0;
     double varianceY=0.0;
 
-    w1=0.8;
+    w1=0.9;
     w2=10.0;
 
     //normalization
