@@ -1,6 +1,7 @@
 #ifndef GENERATOR_H
 #define GENERATOR_H
 
+#include <random>
 #include <thread>
 #include <mutex>
 #include <vector>
@@ -110,6 +111,8 @@ private:
     double q_sum;
     double d_sum;
     bool m_localmin;
+
+    std::mt19937 rand_gen;
 };
 
 #endif // GENERATOR_H

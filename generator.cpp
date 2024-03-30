@@ -6,7 +6,8 @@
 
 #define RAD(X) ((X)*(M_PI/180.0))
 
-Generator::Generator(const info in, const Sensor& sen, const double* pos, const double* gpos)
+Generator::Generator(const info in, const Sensor& sen, const double* pos, const double* gpos):
+    rand_gen(std::random_device()())
 {
     ip=in;
     s=new Sensor(sen);
@@ -55,6 +56,7 @@ Generator::Generator(const Generator &gen, const double *pos)
 
     rPath.push_back({rPos[INDEX_X],rPos[INDEX_Y],rPos[INDEX_Q]});
     m_localmin=false;
+
 }
 
 Generator::~Generator()
@@ -355,7 +357,7 @@ void Generator::getStagPos(double *pos)
     pos[INDEX_X]=mean_x;
     pos[INDEX_Y]=mean_y;
 }
-#include <random>
+
 void Generator::getTemporaryGoal(double *pos)
 {
     pos[INDEX_X]=temporaryGoal[INDEX_X];
@@ -382,10 +384,8 @@ void Generator::normalizeAngle(double angle, double &dst)
 
 double Generator::addNoise(double src, double noiseLevel)
 {
-    std::random_device rd;
-    std::mt19937 gen(rd());
     std::normal_distribution<double> d(0.0,noiseLevel);
-    return src+d(gen);
+    return src+d(rand_gen);
 }
 
 double Generator::calcTemporaryGoal()
