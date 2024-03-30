@@ -80,7 +80,7 @@ void MainWindow::updateUi()
     int iCObs=m_obs.num_cobs;
     int iLObs=m_obs.num_lobs;
     int iQuark=m_obs.num_quark;
-    int iPath=m_obs.num_path;
+    int iPath=m_obs.num_path+m_obs.num_optimized_path;
     int iOptimized=m_obs.num_optimized;
     double max_dist=m_sensor.max_dist;
     QVector<QCPCurveData> robot_sensor(num_sensor+1);
