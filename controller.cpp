@@ -258,7 +258,7 @@ double Controller::cost(std::vector<Generator::path> path, std::vector<Generator
     double px,py;
     px=path.front().px;
     py=path.front().py;
-    if(-(w1*cost1+w2*cost2)<-0.4)
+    if(-(w1*cost1+w2*cost2)<-0.3)
         std::cout<<px<<", "<<py<<" : "<<w1*cost1<<", "<<w2*cost2<<", "<<-(w1*cost1+w2*cost2)<<std::endl;
     loss=-(w1*cost1+w2*cost2);
     return -(w1*cost1+w2*cost2);
@@ -469,7 +469,7 @@ void Controller::planing()
             opos[1]=dst[1];
             temp_o[i].x=opos[0];
             temp_o[i].y=opos[1];
-            if(temp_o[i].loss<-0.5)
+            if(temp_o[i].loss<-0.3)
                 o.push_back(temp_o[i]);
         }
         if(o.size()>0)
