@@ -384,6 +384,8 @@ void Controller::detectLocalminimum(bool& bLocalminimum)
     pGen=new Generator(*pRef,lastPredict);
     pGen->gen(Generator::stagnation);
     pGen->getStagPos(stag_pos);
+    std::vector<Generator::path> stag_path;
+    stag_path=pGen->getPath();
     if(!checkGoal(pGen->getPath(),true))
     {
         if(pGen->isLocalmin())
@@ -399,6 +401,7 @@ void Controller::detectLocalminimum(bool& bLocalminimum)
     {
         bLocalminimum=false;
     }
+    pRef->rPath.insert(pRef->rPath.end(), stag_path.begin(), pRef->rPath.end());
 }
 
 void Controller::setState(bool bLocalminimum)
