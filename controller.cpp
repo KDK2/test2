@@ -400,8 +400,8 @@ void Controller::detectLocalminimum(bool& bLocalminimum)
     else
     {
         bLocalminimum=false;
+        pRef->rPath.insert(pRef->rPath.end(), stag_path.begin(), pRef->rPath.end());
     }
-    pRef->rPath.insert(pRef->rPath.end(), stag_path.begin(), pRef->rPath.end());
 }
 
 void Controller::setState(bool bLocalminimum)
