@@ -221,7 +221,7 @@ void MainWindow::updateRobotData(std::vector<int> iData, std::vector<double> dDa
     m_obs.num_path=iData[3];
     m_sensor.num_sensors=iData[4];
     m_obs.num_optimized=iData[5];
-
+    m_obs.num_optimized_path=iData[6];
 
     int index=0;
     m_sensor_data.x.clear();
@@ -269,6 +269,11 @@ void MainWindow::updateRobotData(std::vector<int> iData, std::vector<double> dDa
     m_path_data.px.clear();
     m_path_data.py.clear();
     for(int i=0;i<m_obs.num_path;i++)
+    {
+        m_path_data.px.push_back(dData[index++]);
+        m_path_data.py.push_back(dData[index++]);
+    }
+    for(int i=0;i<m_obs.num_optimized_path;i++)
     {
         m_path_data.px.push_back(dData[index++]);
         m_path_data.py.push_back(dData[index++]);

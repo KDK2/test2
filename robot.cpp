@@ -156,6 +156,7 @@ void Robot::updateData()
     iData.push_back(con.g->rPath.size());//future path size
     iData.push_back(con.s->ip.sparam.num_sensors);//sensor size
     iData.push_back(con.o.size());//optimized pos size
+    iData.push_back(con.optimized_path.size());//optimized path size
 
     for(int i=0;i<con.s->ip.sparam.num_sensors;i++)//sensor pos, data
     {
@@ -188,6 +189,11 @@ void Robot::updateData()
     {
         dData.push_back(con.g->rPath[i].px);
         dData.push_back(con.g->rPath[i].py);
+    }
+    for(int i=0;i<con.optimized_path.size();i++)//path pos
+    {
+        dData.push_back(con.optimized_path[i].px);
+        dData.push_back(con.optimized_path[i].py);
     }
     for(int i=0;i<con.o.size();i++)
     {

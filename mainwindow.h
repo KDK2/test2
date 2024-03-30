@@ -23,6 +23,7 @@ public:
         int num_quark;
         int num_path;
         int num_optimized;
+        int num_optimized_path;
     };
     struct info_sensor
     {
