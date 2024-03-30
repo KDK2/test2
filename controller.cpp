@@ -471,7 +471,6 @@ void Controller::planing()
             auto minIt = std::min_element(o.begin(), o.end(),
                                           [](const optimized_data& a, const optimized_data& b){return a.loss < b.loss;});
             int minIndex = std::distance(o.begin(), minIt);
-            std::cout<<"loss : "<<o[minIndex].loss<<std::endl;
             opos[0]=o[minIndex].x;
             opos[1]=o[minIndex].y;
             ref=new Generator(*g,opos);
@@ -484,6 +483,8 @@ void Controller::planing()
             double d =g->calcTemporaryGoal();
             g->getTemporaryGoal(tg);
             setTemporaryGoal(tg[0],tg[1],tg[2],d);
+            std::cout<<"loss : "<<o[minIndex].loss<<std::endl;
+            std::cout<<"goal: "<<tg[0]<<", "<<tg[1]<<std::endl;
             //setOptimizedTemporaryGoal(tg[0],tg[1],tg[2]);
             //temporary=temporary_o;
         }
