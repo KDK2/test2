@@ -258,7 +258,7 @@ double Controller::cost(std::vector<Generator::path> path, std::vector<Generator
     double px,py;
     px=path.front().px;
     py=path.front().py;
-    //std::cout<<px<<", "<<py<<" : "<<cost1<<", "<<cost2<<", "<<-(w1*cost1+w2*cost2)<<std::endl;
+    std::cout<<px<<", "<<py<<" : "<<cost1<<", "<<cost2<<", "<<-(w1*cost1+w2*cost2)<<std::endl;
     loss=-(w1*cost1+w2*cost2);
     return -(w1*cost1+w2*cost2);
 }
@@ -384,7 +384,7 @@ void Controller::detectLocalminimum(bool& bLocalminimum)
     temp=pRef->getPath();
     lastPredict[0]=pRef->addNoise(temp.back().px,0.01);
     lastPredict[1]=pRef->addNoise(temp.back().py,0.01);
-    lastPredict[2]=pRef->addNoise(temp.back().pq,RAD(3.0));
+    lastPredict[2]=pRef->addNoise(temp.back().pq,RAD(1.0));
     pGen=new Generator(*pRef,lastPredict);
     pGen->gen(Generator::stagnation);
     pGen->getStagPos(stag_pos);
@@ -462,7 +462,6 @@ void Controller::planing()
             double temp2=opos[1];
             opos[0]=g->addNoise(temp,0.01);
             opos[1]=g->addNoise(temp2,0.01);
-            std::cout<<opos[0]-temp<<", "<<opos[1]-temp2<<std::endl;
             double dst[2];
             optimize(opos,dst,temp_o[i].cost1,temp_o[i].cost2,temp_o[i].loss);
             opos[0]=dst[0];
