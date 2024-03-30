@@ -447,15 +447,15 @@ void Controller::planing()
         std::vector<optimized_data>temp_o(sgd_iter);
         for(int i=0;i<sgd_iter;i++)
         {
-            opos[0]=g->addNoise(opos[0],0.01);
-            opos[1]=g->addNoise(opos[1],0.01);
+            opos[0]=g->addNoise(opos[0],0.05);
+            opos[1]=g->addNoise(opos[1],0.05);
             double dst[2];
             optimize(opos,dst,temp_o[i].cost1,temp_o[i].cost2,temp_o[i].loss);
             opos[0]=dst[0];
             opos[1]=dst[1];
             temp_o[i].x=opos[0];
             temp_o[i].y=opos[1];
-            if(temp_o[i].loss<-0.3)
+            if(temp_o[i].loss<-0.35)
                 o.push_back(temp_o[i]);
         }
         if(o.size()>0)
