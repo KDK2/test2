@@ -466,7 +466,7 @@ void Controller::planing()
         if(o.size()>0)
         {
             auto minIt = std::min_element(o.begin(), o.end(),
-                                          [](const optimized_data& a, const optimized_data& b){return a.loss < b.loss;});
+                                          [this](const optimized_data& a, const optimized_data& b){return pow(this->rPos[0]-a.x,2)+pow(this->rPos[1]-a.y,2) < pow(this->rPos[0]-b.x,2)+pow(this->rPos[1]-b.y,2);});
             int minIndex = std::distance(o.begin(), minIt);
             opos[0]=o[minIndex].x;
             opos[1]=o[minIndex].y;
