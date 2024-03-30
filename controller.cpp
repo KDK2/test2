@@ -444,6 +444,7 @@ void Controller::planing()
     else if(localminimum==state)
     {
         o.clear();
+        optimized_path.clear();
         int sgd_iter=200;
         double opos[3]={rPos[0],rPos[1],rPos[2]};
         std::vector<optimized_data>temp_o(sgd_iter);
@@ -475,6 +476,7 @@ void Controller::planing()
             ref->getTemporaryGoal(tg);
             setOptimizedTemporaryGoal(tg[0],tg[1],tg[2]);
             temporary=temporary_o;
+            optimized_path=ref->getPath();
         }
         else
         {

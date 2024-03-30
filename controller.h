@@ -63,6 +63,7 @@ public:
     Generator* g;
 
     std::vector<optimized_data> o;
+    std::vector<Generator::path> optimized_path;
     double stag_pos[2];
 private:
     void updateGenerator();
