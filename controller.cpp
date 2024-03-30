@@ -258,7 +258,7 @@ double Controller::cost(std::vector<Generator::path> path, std::vector<Generator
     double px,py;
     px=path.front().px;
     py=path.front().py;
-    std::cout<<px<<", "<<py<<" : "<<cost1<<", "<<cost2<<", "<<-(w1*cost1+w2*cost2)<<std::endl;
+    //std::cout<<px<<", "<<py<<" : "<<cost1<<", "<<cost2<<", "<<-(w1*cost1+w2*cost2)<<std::endl;
     loss=-(w1*cost1+w2*cost2);
     return -(w1*cost1+w2*cost2);
 }
