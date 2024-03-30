@@ -382,8 +382,8 @@ void Controller::detectLocalminimum(bool& bLocalminimum)
     pRef->gen(Generator::prediction);
     std::vector<Generator::path> temp;
     temp=pRef->getPath();
-    lastPredict[0]=pRef->addNoise(temp.back().px,0.05);
-    lastPredict[1]=pRef->addNoise(temp.back().py,0.05);
+    lastPredict[0]=pRef->addNoise(temp.back().px,0.01);
+    lastPredict[1]=pRef->addNoise(temp.back().py,0.01);
     lastPredict[2]=pRef->addNoise(temp.back().pq,RAD(3.0));
     pGen=new Generator(*pRef,lastPredict);
     pGen->gen(Generator::stagnation);
@@ -460,8 +460,8 @@ void Controller::planing()
         {
             double temp=opos[0];
             double temp2=opos[1];
-            opos[0]=g->addNoise(temp,0.2);
-            opos[1]=g->addNoise(temp2,0.2);
+            opos[0]=g->addNoise(temp,0.01);
+            opos[1]=g->addNoise(temp2,0.01);
             std::cout<<opos[0]-temp<<", "<<opos[1]-temp2<<std::endl;
             double dst[2];
             optimize(opos,dst,temp_o[i].cost1,temp_o[i].cost2,temp_o[i].loss);
