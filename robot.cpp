@@ -59,12 +59,12 @@ Robot::Robot():
     // sen->addCObs(-1.0,3.0,0.4);
     // sen->addCObs(1.0,3.0,0.4);
 
-    //sen->addLObs(1.7,1.7,1.55,1.85);
+    sen->addLObs(1.7,1.7,1.65,1.75);
     //sen->addLObs(1.55,1.85,1.85,2.15);
     sen->addLObs(1.7,1.7,2.0,2.0);
     sen->addLObs(2.0,2.0,2.4,1.6);
     sen->addLObs(2.4,1.6,2.1,1.3);
-    //sen->addLObs(2.1,1.3,2.25,1.15);
+    sen->addLObs(2.1,1.3,2.15,1.25);
     //sen->addLObs(2.25,1.15,2.55,1.45);
     //sen->addLObs(2.55,1.45,1.85,2.15);
 
