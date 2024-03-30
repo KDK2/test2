@@ -468,12 +468,16 @@ void Controller::planing()
             opos[1]=o[minIndex].y;
             ref=new Generator(*g,opos);
             ref->gen(Generator::prediction);
-            double d =ref->calcTemporaryGoal();
-            ref->getTemporaryGoal(tg);
+            optimized_path=ref->getPath();
+            for(int i=0;i<optimized_path.size();i++)
+            {
+                g->rPath.push_back(optimized_path[i]);
+            }
+            double d =g->calcTemporaryGoal();
+            g->getTemporaryGoal(tg);
             setTemporaryGoal(tg[0],tg[1],tg[2],d);
             //setOptimizedTemporaryGoal(tg[0],tg[1],tg[2]);
             //temporary=temporary_o;
-            optimized_path=ref->getPath();
         }
         else
         {
