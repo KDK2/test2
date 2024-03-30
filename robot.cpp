@@ -44,7 +44,7 @@ Robot::Robot():
     con.getPos(pos);
     //con.addGoal(4.0,4.0,0.0);//add global goal
     //con.addGoal(0.0,5.0,0.0);//add global goal
-    //con.addGoal(2.5,2.0,0.0);//add global goal
+    con.addGoal(2.5,2.0,0.0);//add global goal
     con.getGoal(cgoal,true);
 
     sen=new Sensor(is);
