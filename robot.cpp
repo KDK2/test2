@@ -31,7 +31,7 @@ Robot::Robot():
     ig.p_param.lparam.delta=0.05;
     ig.p_param.lparam.lam=2.0;
     ig.p_param.lparam.lam_stagnation=0.25*ig.p_param.lparam.lam;
-    ig.p_param.lparam.radius=0.25*ig.p_param.lparam.lam_stagnation;
+    ig.p_param.lparam.radius=0.5*ig.p_param.lparam.lam_stagnation;
 
     ig.m_param.eparam.theta_max=15.0*M_PI/180.0;
     ig.m_param.eparam.tolorance=0.15;
@@ -56,7 +56,7 @@ Robot::Robot():
     // sen->addLObs(2.68,1.81,2.66,2.74);
 
     sen->addCObs(0.0,3.0,0.4);
-    sen->addCObs(-1.0,3.0,0.6);
+    sen->addCObs(-1.0,3.0,0.4);
     sen->addCObs(1.0,3.0,0.4);
 
     // sen->addLObs(1.7,1.7,1.55,1.85);
