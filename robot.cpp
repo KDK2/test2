@@ -42,7 +42,7 @@ Robot::Robot():
     double cgoal[SIZE_STATE];
 
     con.getPos(pos);
-    con.addGoal(2.8,3.2,0.0);//add global goal
+    con.addGoal(2.8,3.4,0.0);//add global goal
     //con.addGoal(0.0,5.0,0.0);//add global goal
     //con.addGoal(2.5,2.0,0.0);//add global goal
     con.getGoal(cgoal,true);
