@@ -63,7 +63,7 @@ void Controller::setTemporaryGoal(double x, double y, double theta, double d)
     {
         if(!(d>temporary.d)) return;
     }
-    else if(optimized==state)
+    else if(localminimum==state)
     {
         if(!(d>temporary.d)) return;
     }
