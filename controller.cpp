@@ -485,6 +485,7 @@ void Controller::planing()
             if(to.size()==0)
             {
                 std::cout<<"no optimized data"<<std::endl;
+                o.clear();
                 return;
             }
             auto minIt = std::min_element(to.begin(), to.end(),
