@@ -108,7 +108,7 @@ void Controller::checkMaxVelocity(double vel, double vel_max, double &dst)
 #include <algorithm>
 void Controller::optimize(const double *pos, double *dst, double* cst1, double* cst2, double& loss)
 {
-    double delta=0.001;
+    double delta=0.003;
 
     std::vector<Generator::path> pfPath;
     std::vector<Generator::path> paPath;
@@ -116,7 +116,7 @@ void Controller::optimize(const double *pos, double *dst, double* cst1, double* 
     std::vector<Generator::path> maPath;
 
     double gradient[2]={0.0,0.0};
-    double learning_rate=0.01;
+    double learning_rate=0.005;
 
     std::vector<double> cost1;
     std::vector<double> cost2;
