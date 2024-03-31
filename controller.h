@@ -75,6 +75,7 @@ private:
     double esum;
 
     double kp,ki;
+    double minLoss;
     con_state state;
 };
 

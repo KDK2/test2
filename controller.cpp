@@ -18,6 +18,7 @@ Controller::Controller():
     esum(0.0),
     kp(6.0),
     ki(0.006),
+    minLoss(0.0),
     state(idle)
 {
 }
@@ -427,7 +428,11 @@ void Controller::setState(bool bLocalminimum)
     {
         if     (idle==state)         state=idle;
         else if(localminimum==state) state=optimized;
-        else if(optimized==state)    state=idle;
+        else if(optimized==state)
+        {
+            state=idle;
+            minLoss=0.0;
+        }
     }
 }
 
@@ -486,6 +491,14 @@ void Controller::planing()
             auto minIt = std::min_element(to.begin(), to.end(),
                                           [](const optimized_data& a, const optimized_data& b){return a.loss < b.loss;});
             int minIndex = std::distance(to.begin(), minIt);
+            if(minLoss>to[minIndex].loss)
+            {
+                minLoss=to[minIndex].loss;
+            }
+            else
+            {
+                return;
+            }
             opos[0]=to[minIndex].x;
             opos[1]=to[minIndex].y;
             ref=new Generator(*g,opos);
