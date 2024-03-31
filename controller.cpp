@@ -282,10 +282,13 @@ void Controller::checkGoal()
             //s->vq.clear();
         }
     }
-    for(int i=0;i<goals.size();i++)
+    else
     {
-        if(goals[i].arrived) continue;
-        if(d<tolorance) goals[i].arrived=true;
+        for(int i=0;i<goals.size();i++)
+        {
+            if(goals[i].arrived) continue;
+            if(d<tolorance) goals[i].arrived=true;
+        }
     }
 }
 
