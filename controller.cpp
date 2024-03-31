@@ -347,8 +347,8 @@ void Controller::control()
     }
     setState(bDetect);
     planing();
-    updateGenerator();
     moveGoal();
+    updateGenerator();
 }
 
 void Controller::detectLocalminimum(bool& bLocalminimum)
