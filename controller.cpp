@@ -475,7 +475,7 @@ void Controller::planing()
             std::vector<optimized_data> to;
             for(int i=0;i<o.size();i++)
             {
-                if(o[i].loss<-0.3)
+                if(o[i].loss<-0.25)
                     to.push_back(o[i]);
             }
             if(to.size()==0)
