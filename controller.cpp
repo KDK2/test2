@@ -431,7 +431,6 @@ void Controller::setState(bool bLocalminimum)
         else if(optimized==state)
         {
             state=idle;
-            minLoss=0.0;
         }
     }
 }
