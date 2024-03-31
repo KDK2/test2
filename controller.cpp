@@ -281,7 +281,6 @@ void Controller::checkGoal()
             temporary.d=0.0;
             //s->vq.clear();
         }
-        return;
     }
     for(int i=0;i<goals.size();i++)
     {
