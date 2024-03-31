@@ -469,16 +469,26 @@ void Controller::planing()
             opos[1]=dst[1];
             temp_o[i].x=opos[0];
             temp_o[i].y=opos[1];
-            if(temp_o[i].loss<-0.3)
-                o.push_back(temp_o[i]);
+            o.push_back(temp_o[i]);
         }
         if(o.size()>0)
         {
-            auto minIt = std::min_element(o.begin(), o.end(),
+            std::vector<optimized_data> to;
+            for(int i=0;i<o.size();i++)
+            {
+                if(o[i].loss<-0.3)
+                    to.push_back(o[i]);
+            }
+            if(to.size()==0)
+            {
+                std::cout<<"no optimized data"<<std::endl;
+                return;
+            }
+            auto minIt = std::min_element(to.begin(), to.end(),
                                           [](const optimized_data& a, const optimized_data& b){return a.loss < b.loss;});
-            int minIndex = std::distance(o.begin(), minIt);
-            opos[0]=o[minIndex].x;
-            opos[1]=o[minIndex].y;
+            int minIndex = std::distance(to.begin(), minIt);
+            opos[0]=to[minIndex].x;
+            opos[1]=to[minIndex].y;
             ref=new Generator(*g,opos);
             ref->gen(Generator::prediction);
             optimized_path=ref->getPath();
@@ -489,7 +499,7 @@ void Controller::planing()
             double d =g->calcTemporaryGoal();
             g->getTemporaryGoal(tg);
             setTemporaryGoal(tg[0],tg[1],tg[2],d);
-            std::cout<<"loss : "<<o[minIndex].loss<<std::endl;
+            std::cout<<"loss : "<<to[minIndex].loss<<std::endl;
             std::cout<<"goal: "<<tg[0]<<", "<<tg[1]<<std::endl;
             //setOptimizedTemporaryGoal(tg[0],tg[1],tg[2]);
             //temporary=temporary_o;
