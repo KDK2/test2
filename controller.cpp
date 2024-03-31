@@ -498,6 +498,7 @@ void Controller::planing()
             }
             else
             {
+                o.clear();
                 return;
             }
             opos[0]=to[minIndex].x;
