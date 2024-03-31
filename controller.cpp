@@ -493,8 +493,8 @@ void Controller::planing()
             if(minLoss>to[minIndex].loss)
             {
                 minLoss=to[minIndex].loss;
-                o.clear();
-                o.push_back(to[minIndex]);
+                // o.clear();
+                // o.push_back(to[minIndex]);
             }
             else
             {
