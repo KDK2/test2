@@ -59,14 +59,14 @@ void Controller::setGenerator(Generator *generator)
 
 void Controller::setTemporaryGoal(double x, double y, double theta, double d)
 {
-    if(idle==state)
-    {
-        if(!(d>temporary.d)) return;
-    }
-    else if(localminimum==state)
-    {
-        if(!(d>temporary.d)) return;
-    }
+    if(!(d>temporary.d)) return;
+    // if(idle==state)
+    // {
+    // }
+    // else if(localminimum==state)
+    // {
+    //     if(!(d>temporary.d)) return;
+    // }
     temporary.x=x;
     temporary.y=y;
     temporary.theta=theta;
