@@ -460,8 +460,8 @@ void Controller::planing()
         {
             double temp=opos[0];
             double temp2=opos[1];
-            opos[0]=g->addNoise(temp,0.05);
-            opos[1]=g->addNoise(temp2,0.05);
+            opos[0]=g->addNoise(temp,0.1);
+            opos[1]=g->addNoise(temp2,0.1);
             double dst[2];
             optimize(opos,dst,temp_o[i].cost1,temp_o[i].cost2,temp_o[i].loss);
             opos[0]=dst[0];
