@@ -43,7 +43,8 @@ Robot::Robot():
 
     con.getPos(pos);
     //con.addGoal(2.8,3.4,0.0);//add global goal
-    con.addGoal(0.0,5.0,0.0);//add global goal
+    //con.addGoal(0.0,5.0,0.0);//add global goal
+    con.addGoal(6.0,3.0,0.0);//add global goal
     //con.addGoal(2.5,2.0,0.0);//add global goal
     con.getGoal(cgoal,true);
 
@@ -53,9 +54,14 @@ Robot::Robot():
     // sen->addLObs(2.5,2.5,2.48,1.8);
     // sen->addLObs(2.48,1.8,2.53,1.801);
 
-    sen->addCObs(0.0,3.0,0.4);
-    sen->addCObs(-1.0,3.0,0.4);
-    sen->addCObs(1.0,3.0,0.4);
+    // sen->addCObs(0.0,3.0,0.4);
+    // sen->addCObs(-1.0,3.0,0.4);
+    // sen->addCObs(1.0,3.0,0.4);
+    sen->addCObs(6.0,5.0,0.5);
+    sen->addCObs(4.0,5.0,0.5);
+    sen->addCObs(3.2,5.0,0.5);
+    sen->addCObs(2.4,5.0,0.5);
+    sen->addCObs(6.8,5.0,0.5);
 
     // sen->addLObs(1.7,1.7,1.65,1.75);
     // sen->addLObs(1.7,1.7,2.0,2.0);
