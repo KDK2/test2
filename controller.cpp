@@ -349,6 +349,7 @@ void Controller::control()
     planing();
     moveGoal();
     updateGenerator();
+    //odom, tf업데이트 필요
 }
 
 void Controller::detectLocalminimum(bool& bLocalminimum)
