@@ -377,9 +377,12 @@ void Controller::getGoal(double *dst, bool bGlobal)
         {
             if(!goals[i].arrived)
             {
-                dst[INDEX_X]=goals[i].x;
-                dst[INDEX_Y]=goals[i].y;
-                dst[INDEX_Q]=goals[i].theta;
+                // dst[INDEX_X]=goals[i].x;
+                // dst[INDEX_Y]=goals[i].y;
+                // dst[INDEX_Q]=goals[i].theta;
+                dst[INDEX_X]=5.0;
+                dst[INDEX_Y]=1.0;
+                dst[INDEX_Q]=0.0;
                 return;
             }
         }
