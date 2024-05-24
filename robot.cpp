@@ -74,6 +74,7 @@ Robot::Robot():
     con.s=sen;
     con.a=act;
     con.g=new Generator(ig,*con.s,pos,cgoal);
+    std::cout<<"goal"<<cgoal[0]<<cgoal[1]<<cgoal[2]<<std::endl;
 }
 
 Robot::~Robot()
