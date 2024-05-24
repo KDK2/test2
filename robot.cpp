@@ -68,13 +68,13 @@ Robot::Robot():
     // sen->addLObs(2.0,2.0,2.4,1.6);
     // sen->addLObs(2.4,1.6,2.1,1.3);
     // sen->addLObs(2.1,1.3,2.15,1.25);
+    std::cout<<"goal"<<cgoal[0]<<cgoal[1]<<cgoal[2]<<std::endl;
 
     act=new Actuator(ia);
 
     con.s=sen;
     con.a=act;
     con.g=new Generator(ig,*con.s,pos,cgoal);
-    std::cout<<"goal"<<cgoal[0]<<cgoal[1]<<cgoal[2]<<std::endl;
 }
 
 Robot::~Robot()
