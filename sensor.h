@@ -6,6 +6,9 @@
 #include <mutex>
 #include <chrono>
 #define SIZE_STATE 3
+#define INDEX_X 0
+#define INDEX_Y 0
+#define INDEX_Q 0
 class Sensor
 {
 public:
@@ -99,7 +102,7 @@ public:
     std::vector<info_lobs>  vl;//linear obstacles
     std::vector<info_quark> vq;//quark, sense data
 
-    info_sensor *is;
+    std::vector<info_sensor> is;
     info_param  ip;
 
     double rpos[SIZE_STATE];

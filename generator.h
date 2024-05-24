@@ -1,14 +1,9 @@
 #ifndef GENERATOR_H
 #define GENERATOR_H
-
 #include <random>
-#include <thread>
-#include <mutex>
-#include <vector>
-#include <numeric>
 #include "sensor.h"
-#define CORD_SIZE 2
-#define SIZE_STATE 3
+#include <vector>
+
 class Generator
 {
 public:
@@ -67,52 +62,59 @@ public:
     {
         double px,py,pq;
     };
-
-    enum genmode{reference,prediction,stagnation};//artificial potential field, predict artificial potential field
-
+    enum genmode{reference, prediction, stagnation};
     Generator(const info in, const Sensor& sen, const double* pos, const double* gpos);
-    Generator(const Generator& gen);
+    Generator(const Generator& gen, Sensor& sen, const double* pos);
     Generator(const Generator& gen, const double *pos);
     ~Generator();
-    void setSensor(Sensor& sen);
-    void updateSensor(Sensor& sen);
-    void setGoal(double* gpos);
-    void setPos(double* pos);
+
+    void setSensor(Sensor &sen);
+    void normalizeAngle(double src, double &dst);
+    void setGoal(double *goal);
+    void setPos(double *pos);
+    void getTgoal(double *tgoal);
+
     void gen(genmode mode);
     void getRef(double &v, double &q);
     void getStagPos(double* pos);
-    void getTemporaryGoal(double* pos);
-    void normalizeAngle(double src, double &dst);
-    double getVariance();
-    double addNoise(double src,double noiseLevel=0.01);
-    double calcTemporaryGoal();
-    double calcTemporaryGoal(double *pos);
-    bool isLocalmin();
+
+    double calcTgoal();
+    double addNoise(double src, double sigma);
+    double addRealNoise(double src, double sigma);
+
+    int    rndInt(int range);
+    double rndDouble(double min,double max);
+    void   setDD(const std::vector<double>& weights);
+    int    rndDD();
+
+    bool isLocalMin();
+
     std::vector<path> getPath();
 
     info ip;
-    std::vector<path> rPath;
+    std::vector<path> m_rPath;
+    Sensor* s;
+    bool isArrived=false;
+    void ref();
 protected:
     void attForce(double* pos, double* f);
     void repForce(int i, double* f);
-    void quarkForce(int i, double* f);
 
-    void force(double* pos, double* f,bool bQuark);
-    void ref();
+    void force(double* pos, double* f);
     void checkMaxRef(double ref, double& dst);
+    void checkMaxRef(double ref, double* src, double& dst);
     void predict(bool bStag);
     void detLocalmin();
-private:
-    Sensor* s;
-    double rPos[SIZE_STATE];
-    double gPos[SIZE_STATE];
-    double temporaryGoal[SIZE_STATE];
-    double v_ref,q_ref;
-    double q_sum;
-    double d_sum;
-    bool m_localmin;
 
+private:
+    double m_rPos[SIZE_STATE];
+    double m_gGoal[SIZE_STATE];
+    double m_tGoal[SIZE_STATE];
+    double v_ref,q_ref;
+
+    bool m_bLocalMin;
     std::mt19937 rand_gen;
+    std::discrete_distribution<> *dd=nullptr;
 };
 
 #endif // GENERATOR_H

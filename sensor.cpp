@@ -1,9 +1,6 @@
 #include "sensor.h"
 #include "math.h"
 
-#define INDEX_X 0
-#define INDEX_Y 1
-#define INDEX_Q 2
 #define TYPE_CIRCLE 0
 #define TYPE_LINE 1
 
@@ -44,19 +41,22 @@ Sensor::Sensor(int num_sensors, double max_dist, double radius, int max_quark)
 
     ip.qparam.max_quark=max_quark;
 
-    is=new info_sensor[num_sensors];
+    std::vector<info_sensor>temp(ip.sparam.num_sensors);
+    is=temp;
 }
 
 Sensor::Sensor(const info_param in)
 {
     ip=in;
-    is=new info_sensor[ip.sparam.num_sensors];
+    std::vector<info_sensor>temp(ip.sparam.num_sensors);
+    is=temp;
 }
 
 Sensor::Sensor(const Sensor& sen)
 {
     ip=sen.ip;
-    is=new info_sensor[ip.sparam.num_sensors];
+    std::vector<info_sensor>temp(ip.sparam.num_sensors);
+    is=temp;
 
     rpos[INDEX_X]=sen.rpos[INDEX_X];
     rpos[INDEX_Y]=sen.rpos[INDEX_Y];
@@ -69,11 +69,7 @@ Sensor::Sensor(const Sensor& sen)
 
 Sensor::~Sensor()
 {
-    if(is!=nullptr)
-    {
-        delete is;
-        is=nullptr;
-    }
+
 }
 
 void Sensor::updateSensorPos()

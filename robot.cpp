@@ -70,11 +70,10 @@ Robot::Robot():
     // sen->addLObs(2.1,1.3,2.15,1.25);
 
     act=new Actuator(ia);
-    gen=new Generator(ig,*sen,pos,cgoal);
 
-    con.setSensor(sen);
-    con.setActuator(act);
-    con.setGenerator(gen);
+    con.s=sen;
+    con.a=act;
+    con.g=new Generator(ig,*con.s,pos,cgoal);
 }
 
 Robot::~Robot()
@@ -124,7 +123,9 @@ void Robot::updateLoop()
 {
     while(m_running)
     {
-        con.control();
+        double rPos[3];
+        memcpy(rPos,con.m_rPos,sizeof(double)*SIZE_STATE);
+        con.control(rPos);
         updateData();
         {
             setDataUpdated(true);
@@ -154,7 +155,7 @@ void Robot::updateData()
     iData.push_back(con.s->vc.size());//cobstacle size
     iData.push_back(con.s->vl.size());//lobstacle size
     iData.push_back(con.s->vq.size());//quark size
-    iData.push_back(con.g->rPath.size());//future path size
+    iData.push_back(con.g->m_rPath.size());//future path size
     iData.push_back(con.s->ip.sparam.num_sensors);//sensor size
     iData.push_back(con.o.size());//optimized pos size
     iData.push_back(con.optimized_path.size());//optimized path size
@@ -186,10 +187,10 @@ void Robot::updateData()
         dData.push_back(con.s->vq[i].pos.x);
         dData.push_back(con.s->vq[i].pos.y);
     }
-    for(int i=0;i<con.g->rPath.size();i++)//path pos
+    for(int i=0;i<con.g->m_rPath.size();i++)//path pos
     {
-        dData.push_back(con.g->rPath[i].px);
-        dData.push_back(con.g->rPath[i].py);
+        dData.push_back(con.g->m_rPath[i].px);
+        dData.push_back(con.g->m_rPath[i].py);
     }
     for(int i=0;i<con.optimized_path.size();i++)//path pos
     {
