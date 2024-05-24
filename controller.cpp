@@ -12,7 +12,7 @@ Controller::Controller():
     a(nullptr),
     bArrived(false),
     temporary({0,0,0,0,true}),
-    m_rPos({0.0,0.0,0}),
+    m_rPos({5.0,7.0,0}),
     eold(0.0),
     kp(2.2),
     kd(0.8),
