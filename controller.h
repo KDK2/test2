@@ -100,7 +100,6 @@ public:
     double con_vel[2];
     bool   bArrived;
     bool   bFirst=true;
-    double m_rPos[SIZE_STATE];
 
 protected:
     void initConState(double* pos);
@@ -116,6 +115,7 @@ private:
     double kp,kd;
     double minLoss;
     con_state state;
+    double m_rPos[SIZE_STATE];
 };
 
 #endif // CONTROLLER_H

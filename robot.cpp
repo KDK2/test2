@@ -125,7 +125,7 @@ void Robot::updateLoop()
     while(m_running)
     {
         double rPos[3];
-        memcpy(rPos,con.m_rPos,sizeof(double)*SIZE_STATE);
+        con.getPos(rPos);
         con.control(rPos);
         updateData();
         {
